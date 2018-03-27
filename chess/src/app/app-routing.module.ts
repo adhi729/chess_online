@@ -14,7 +14,7 @@ const routes: Routes = [
   { path:'profile/:id', component:ProfileComponent },
   { path:'play', component:ChessboardComponent },  
   { path:'leaderboard', component:LeaderboardComponent },
-  { path:'test', component:LoginScreenComponent },
+  { path:'test', component:LoginComponent },
   { path: '', redirectTo: '/home', pathMatch: 'full'},
   { path: '**', component: PageNotFoundComponent }
 
