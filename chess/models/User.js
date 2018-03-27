@@ -4,13 +4,15 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var MatchSchema = new Schema({
-	userid : { type:String, required: true},
-  	stamp : { type : Date, default : Date()},
-  	color : {type:String,required:true}
+  matchid : { type:String, required: true},
+  round : { type:String, required: true},
+  result : {type: Number, default : 0},
+  stamp : { type : Date, default : Date()},
+  color : {type:String,required:true}
 });
 
 var UserSchema = new Schema({
-  userid: {type: String,required : true},
+  // userid: {type: String,required : true},
   roll : {type: String,required:true},
   matcheswon : {type: Number,default:0},
   matchesplayed : {type: Number,default:0},
@@ -19,7 +21,6 @@ var UserSchema = new Schema({
   instirating: {type: Number,default:1000}
 });
 
-// check for id....
 var BlogSchema = new Schema({
   title : {type: String,required : true},
   subtitle : {type: String,required : true},
@@ -28,14 +29,16 @@ var BlogSchema = new Schema({
 });
 
 var UserOnline = new Schema({
-  sessionid: {type: String,required : true},
+  // sessionid: {type: String,required : true},
   userid: {type: String,required : true}
 });
 
 var AllMatch = new Schema({
   matchid : {type: String,required : true},
+  type : {type: String,required : true},
+  round : {type: String,required : true},
   scoresheet: [Number],
-  Result : {type: Number, default : 0}
+  result : {type: Number, default : 0}
 }); 
 
 var Users = mongoose.model('Users', UserSchema);

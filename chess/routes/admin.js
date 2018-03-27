@@ -91,7 +91,13 @@ router.get('/blog', function(req, res, next) {
 
 	User.Blog.find(function (err, products) {
 		if (err) return next(err);
-		res.json(products);
+		var myres = [];
+		for( var i=0; i< products.length ; i++)
+		{
+			myres.push({id: products[i]._id, title: products[i].title, subtitle: products[i].subtitle, stamp: products[i].stamp});
+		}
+		var jsonret = JSON.stringify(myres);
+      	res.json(jsonret);
 	});
 });
 
@@ -133,7 +139,7 @@ router.get('/auth', function(req, res, next) {
 	else
 	{
 		myres.isauthenticated = true;
-		myres.userid = atob(req.headers['userid']);
+		myres.userid = req.headers['userid'];
 		myres.sessionid = btoa(atob(req.headers['userid']) + atob(req.headers['userid']));
 		Adminsonline.push({userid: myres.userid, sessionid: myres.sessionid}); 	
 	}
@@ -153,6 +159,118 @@ router.post('/auth', function(req, res, next) {
 	if(found == 0) { return res.status(404).send('Not Found'); }
 	else { Adminsonline.splice(index,1); return res.json(myres);}
 });
+
+
+/* Send json */
+router.get('/sendratings', function(req, res, next) {
+	var found = 0;
+	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
+
+	for(var i=0; i< Adminsonline.length; i++)
+	{
+		if(Adminsonline[i].userid === req.headers['userid']) { found = 1; }
+	}
+	if(found == 0) { return res.status(404).send('Not Found'); }
+
+	User.Users.find(function (err, products) {
+		if (err) return next(err);
+		var myres = [];
+		for(var i=0; i < products.length; i++)
+		{
+			myres.push({roll: products[i].roll, rating: products[i].instirating});
+		}
+		
+		var jsonret = JSON.stringify(myres);
+      	res.json(jsonret);
+	});
+});
+
+/* Get Matches */
+router.post('/matches', function(req, res, next) {
+	var found = 0;
+	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
+
+	for(var i=0; i< Adminsonline.length; i++)
+	{
+		if(Adminsonline[i].userid === req.headers['userid']) { found = 1; }
+	}
+	if(found == 0) { return res.status(404).send('Not Found'); }
+
+	var fixtures = JSON.parse(req.body.fixtures);
+	var j = 0;
+	for(var i =0 ;i< fixtures.length ; i++)
+	{
+		User.Users.find({roll: fixtures.white},function(err,white){
+			if (err) return next(err);
+			User.Users.find({roll: fixtures.black},function(err,black){
+				if (err) return next(err);
+				var newid = white[0]._id + black[0]._id;
+				User.Allmatch.create({matchid: newid, type : req.body.type , round : req.body.round}, function(err,match){
+					if (err) return next(err);
+					User.Match.create({matchid: newid, color : "white" , round : req.body.round},function(err,whitematch){
+						if (err) return next(err);
+						white[0].matches.push(whitematch);
+						User.Match.create({matchid: newid, color : "black" , round : req.body.round},function(err,blackmatch){
+							if (err) return next(err);
+							black[0].matches.push(blackmatch);
+							white[0].save();
+							black[0].save();
+							j++;
+						});	
+					});
+				});
+			});
+		});
+	}
+	while(j!=fixtures.length) {require('deasync').sleep(10);}
+});
+
+router.post('/changeresult', function(req, res, next){
+	var found = 0;
+	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
+
+	for(var i=0; i< Adminsonline.length; i++)
+	{
+		if(Adminsonline[i].userid === req.headers['userid']) { found = 1; }
+	}
+	if(found == 0) { return res.status(404).send('Not Found'); }
+
+	User.Allmatch.find({matchid: req.headers['matchid']}, function(err,match){
+		if (err) return next(err);
+		match[0].result = req.headers['result'];
+		match[0].save();
+		var matchid = req.headers['matchid'],result = req.headers['result'];
+		var whiteplayer = matchid.slice(0,(matchid.length)/2);
+		var blackplayer = matchid.slice((matchid.length)/2,matchid.length);
+		User.Users.findById(whiteplayer, function (err, white) {
+			User.Users.findById(blackplayer, function (err, black) {
+				white.matchesplayed = white.matchesplayed + 1;
+				black.matchesplayed = black.matchesplayed + 1;
+				for(var i =0 ; i<white.matches.length; i++)
+				{
+					if(white.matches[i].matchid === matchid)
+					{
+						white.matches[i].result = result;
+						break;	
+					}
+				}
+				for(var i =0 ; i<black.matches.length; i++)
+				{
+					if(black.matches[i].matchid === matchid)
+					{
+						black.matches[i].result = result;
+						break;	
+					}
+				}
+				white.save();
+				black.save();
+				
+			});	
+		});
+	});
+});
+
+
 
 module.exports = router;
 
