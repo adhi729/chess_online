@@ -79,13 +79,15 @@ router.post('/auth', function(req, res, next) {
 	var found = 0,index;
 	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
 
-	for(var i=0; i< Adminsonline.length; i++)
-	{
-		if(Adminsonline[i].userid === req.headers['userid']) { found = 1; index = i; break; }
-	}
-	var myres = {success: true};
-	if(found == 0) { return res.status(404).send('Not Found'); }
-	else { Adminsonline.splice(index,1); return res.json(myres);}
+	User.Useronline.find({userid:req.headers['userid']},function(err,onlineuser){
+		if(!onlineuser) { return res.status(404).send('Not Found'); }
+		User.Useronline.findByIdAndRemove(onlineuser._id, function (err, post) {
+			if (err) return next(err);
+			var myres = {success: true};
+			return res.json(myres);
+		});
+	});
+	
 });
 
 /* All Blogs */
@@ -93,22 +95,19 @@ router.get('/blog', function(req, res, next) {
 	var found = 0;
 	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
 
-	for(var i=0; i< Adminsonline.length; i++)
-	{
-		if(Adminsonline[i].userid === req.headers['userid']) { found = 1; }
-	}
-	if(found == 0) { return res.status(404).send('Not Found'); }
-
-	User.Blog.find(function (err, products) {
-		if (err) return next(err);
-		var myres = [];
-		for( var i=0; i< products.length ; i++)
-		{
-			myres.push({id: products[i]._id, title: products[i].title, subtitle: products[i].subtitle, stamp: products[i].stamp});
-		}
-		var jsonret = JSON.stringify(myres);
-      	res.json(jsonret);
-	});
+	User.Useronline.find({userid:req.headers['userid']},function(err,onlineuser){
+		if(!onlineuser) { return res.status(404).send('Not Found'); }
+		User.Blog.find(function (err, products) {
+			if (err) return next(err);
+			var myres = [];
+			for( var i=0; i< products.length ; i++)
+			{
+				myres.push({id: products[i]._id, title: products[i].title, subtitle: products[i].subtitle, stamp: products[i].stamp});
+			}
+			var jsonret = JSON.stringify(myres);
+	      	res.json(jsonret);
+		});
+	});	
 });
 
 /* Single Blog By ID */
@@ -116,16 +115,13 @@ router.get('/blog/:id', function(req, res, next) {
 	var found = 0;
 	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
 
-	for(var i=0; i< Adminsonline.length; i++)
-	{
-		if(Adminsonline[i].userid === req.headers['userid']) { found = 1; }
-	}
-	if(found == 0) { return res.status(404).send('Not Found'); }
-
-	User.Blog.findById(req.params.id, function (err, post) {
-		if (err) return next(err);
-		res.json(post);
-	});
+	User.Useronline.find({userid:req.headers['userid']},function(err,onlineuser){
+		if(!onlineuser) { return res.status(404).send('Not Found'); }
+		User.Blog.findById(req.params.id, function (err, post) {
+			if (err) return next(err);
+			res.json(post);
+		});
+	});	
 });
 
 /* Display Profile */
@@ -133,18 +129,16 @@ router.get('/:id', function(req, res, next) {
 	var found = 0;
 	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
 
-	for(var i=0; i< Adminsonline.length; i++)
-	{
-		if(Adminsonline[i].userid === req.headers['userid']) { found = 1; }
-	}
-	if(found == 0) { return res.status(404).send('Not Found'); }
+	User.Useronline.find({userid:req.headers['userid']},function(err,onlineuser){
+		if(!onlineuser) { return res.status(404).send('Not Found'); }
 
-	User.Users.findById(req.params.id, function (err, post) {
-		if (err) return next(err);
-		if(post.matches.length > 10)
-		  post.matches = post.matches.slice(0,11);
-		res.json(post);
-	});
+		User.Users.findById(req.params.id, function (err, post) {
+			if (err) return next(err);
+			if(post.matches.length > 10)
+			  post.matches = post.matches.slice(0,11);
+			res.json(post);
+		});
+	});	
 });
 
 /* Leaderboard */
@@ -152,28 +146,25 @@ router.get('/leaderboard',function(req, res, next) {
 	var found = 0;
 	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
 
-	for(var i=0; i< Adminsonline.length; i++)
-	{
-		if(Adminsonline[i].userid === req.headers['userid']) { found = 1; }
-	}
-	if(found == 0) { return res.status(404).send('Not Found'); }
-
-	User.Users.find().sort({ instirating : -1 },function(err,userobj){
-	    if (err) return next(err);
-	    if(!userobj) { return res.status(404).send('Not Found'); }
-	    if(userobj.length <= 10)
-	    {
-	    	var jsonret = JSON.stringify(userobj);
-			res.json(jsonret);
-	    }
-	    var usertop = userobj.slice(0,10);
-	    User.Users.findById(req.headers['userid'], function (err, post) {
-			  if (err) return next(err);
-			  usertop.push(post);
-			  var jsonret = JSON.stringify(usertop);
-			  res.json(jsonret);
-	    });
-  	});
+	User.Useronline.find({userid:req.headers['userid']},function(err,onlineuser){
+		if(!onlineuser) { return res.status(404).send('Not Found'); }
+		User.Users.find().sort({ instirating : -1 },function(err,userobj){
+		    if (err) return next(err);
+		    if(!userobj) { return res.status(404).send('Not Found'); }
+		    if(userobj.length <= 10)
+		    {
+		    	var jsonret = JSON.stringify(userobj);
+				res.json(jsonret);
+		    }
+		    var usertop = userobj.slice(0,10);
+		    User.Users.findById(req.headers['userid'], function (err, post) {
+				  if (err) return next(err);
+				  usertop.push(post);
+				  var jsonret = JSON.stringify(usertop);
+				  res.json(jsonret);
+		    });
+	  	});
+	});
 });
 
 
