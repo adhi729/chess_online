@@ -20,16 +20,9 @@ if (typeof atob === 'undefined') {
 
 var Adminsonline = [];
 
-/* Authenticate Admin */
+/* Authenticate User */
 router.get('/auth', function(req, res, next) {
-	var found = 0;
-	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
-
-	if(req.headers['ldap'] === btoa("admin1starks") && req.headers['userid'] === btoa("admin1")){found = 1;}
-	if(req.headers['ldap'] === btoa("admin2lannisters") && req.headers['userid'] === btoa("admin2")){found = 1;}
-	if(req.headers['ldap'] === btoa("admin3targaryans") && req.headers['userid'] === btoa("admin3")){found = 1;}
-	if(req.headers['ldap'] === btoa("admin4tyrells") && req.headers['userid'] === btoa("admin4")){found = 1;}
-
+	var found = 1;
 	var myres = {isauthenticated: false, userid: "", sessionid: "" };
 
 	if(found == 0) 
@@ -41,9 +34,42 @@ router.get('/auth', function(req, res, next) {
 	else
 	{
 		myres.isauthenticated = true;
-		myres.userid = req.headers['userid'];
-		myres.sessionid = btoa(atob(req.headers['userid']) + atob(req.headers['userid']));
-		Adminsonline.push({userid: myres.userid, sessionid: myres.sessionid}); 	
+		// Adminsonline.push({userid: myres.userid, sessionid: myres.sessionid});
+		User.Users.find({roll: req.headers['userid']},function (err, founduser){
+			if (err) return next(err);
+			if(!founduser) 
+			{
+				var j = 0;
+				User.Users.create({roll:username},function(err,createduser){
+					if (err) return next(err);
+					myres.userid = createduser._id;
+					User.Useronline.create({userid:createduser._id},function(err,onlineuser){
+						if (err) return next(err);
+						myres.sessionid = onlineuser._id;
+						j = 1;
+					}); 
+				});
+				while(j!=1){require('deasync').sleep(1);}
+			}
+			else
+			{
+				myres.userid = founduser._id;
+				User.Useronline.find({userid:founduser._id},function(err,onlineuser){
+					if (err) return next(err);
+					if(!onlineuser)
+					{
+						User.Useronline.create({userid:founduser._id},function(err,nowonline){
+							if (err) return next(err);
+							myres.sessionid = nowonline._id;
+						});
+					}
+					else
+					{
+						myres.sessionid = onlineuser._id;
+					}
+				});
+			}
+		}); 	
 	}
 	res.json(myres);
 });
