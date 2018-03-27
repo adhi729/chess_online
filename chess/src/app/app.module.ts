@@ -18,6 +18,7 @@ import { PlayOnlineComponent } from './play-online/play-online.component';
 import { ChessboardComponent } from './chessboard/chessboard.component';
 import { BoardComponent } from './board/board.component';
 import { TauntsComponent } from './taunts/taunts.component';
+import { UserLoginService } from './user-login.service';
 
 
 @NgModule({
@@ -39,7 +40,7 @@ import { TauntsComponent } from './taunts/taunts.component';
     FormsModule,
     AppRoutingModule
   ],
-  providers: [BlogsService, ProfileService, LeaderboardServiceService],
+  providers: [BlogsService, ProfileService, LeaderboardServiceService,UserLoginService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
