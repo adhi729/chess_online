@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { LoginComponent } from './login/login.component';
-import { Router } from '@angular/router';
- 
+import { NavBarComponent } from './nav-bar/nav-bar.component'
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
