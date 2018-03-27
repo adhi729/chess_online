@@ -5,13 +5,14 @@ import { Message } from './class_defs/message_item';
 
 import * as socketIo from 'socket.io-client';
 
-const SERVER_URL =  'http://localhost:3000';
+const SERVER_URL =  'http://localhost:4000';
 
 @Injectable()
 export class SocketService {
 	private Socket;
 
 	public initSocket(): void{
+		console.log("here")
 		this.Socket = socketIo(SERVER_URL);
 	}
 	public sendMessage(message: Message): void{
