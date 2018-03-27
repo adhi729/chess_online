@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserLoginService } from '../user-login.service';
-import io from "socket.io-client";
 
 @Component({
   selector: 'app-login',
@@ -24,17 +23,8 @@ loginUser(e):void{
 			console.log(this.user.getUserLoggedIn,"login")
 			this.user.setUserLoggedIn(userid);
 			this.router.navigate(['home']);
-			this.connectSocket(userid);
 
 		}
-	}
-	connectSocket(userid: string): void{
-		let socket = io.connect('http://localhost:3000');
-		console.log(socket);
-  socket.on('news', function (data) {
-    console.log(data);
-    socket.emit('username', { name: userid });
-  });
 	}
 	
 }
