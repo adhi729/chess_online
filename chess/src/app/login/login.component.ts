@@ -24,16 +24,16 @@ loginUser(e):void{
 			console.log(this.user.getUserLoggedIn,"login")
 			this.user.setUserLoggedIn(userid);
 			this.router.navigate(['home']);
-			this.connectSocket();
+			this.connectSocket(userid);
 
 		}
 	}
-	connectSocket(): void{
-		let socket = io.connect('http://localhost');
+	connectSocket(userid: string): void{
+		let socket = io.connect('http://localhost:3000');
 		console.log(socket);
   socket.on('news', function (data) {
     console.log(data);
-    socket.emit('my other event', { my: 'data' });
+    socket.emit('username', { name: userid });
   });
 	}
 	
