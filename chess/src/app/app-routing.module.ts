@@ -15,6 +15,7 @@ const routes: Routes = [
   { path:'play', component:ChessboardComponent },  
   { path:'leaderboard', component:LeaderboardComponent },
   { path:'test', component:LoginComponent },
+  { path: '', component:LoginComponent},
   //{ path: '', redirectTo: '/home', pathMatch: 'full'},
   { path: '**', component: PageNotFoundComponent }
 
