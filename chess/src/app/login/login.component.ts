@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserLoginService } from '../user-login.service';
-import io from "socket.io-client";
 
 @Component({
   selector: 'app-login',
