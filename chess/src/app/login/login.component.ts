@@ -30,6 +30,7 @@ loginUser(e):void{
 	}
 	connectSocket(): void{
 		let socket = io.connect('http://localhost');
+		console.log(socket);
   socket.on('news', function (data) {
     console.log(data);
     socket.emit('my other event', { my: 'data' });
