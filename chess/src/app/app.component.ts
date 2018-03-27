@@ -30,9 +30,6 @@ export class AppComponent {
 });
 }
    public sendMessage(message: string): void {
-    if (!message) {
-      return;
-    }
     console.log(message)
     this.socketService.sendMessage({data:message});
     console.log(this.socketService)
