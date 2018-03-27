@@ -3,6 +3,8 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
 var book = require('./routes/book');
 var user = require('./routes/user');
@@ -43,5 +45,16 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+io.on('connection', function(socket){
+  console.log('a user connected');
+  socket.on('username',function(name){
+  	users[name] = socket;
+  });
+  socket.on('chat message', function(msg){
+  	io.emit('chat message', msg);
+  });
+});
+
 
 module.exports = app;
