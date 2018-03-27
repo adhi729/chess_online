@@ -1,4 +1,12 @@
 <script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript">
+	let socket = io.connect('http://localhost:3000');
+		console.log(socket);
+  socket.on('news', function (data) {
+    console.log(data);
+    socket.emit('username', { name: userid });
+  });
+</script>>
 <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet"> 
 <app-nav-bar></app-nav-bar>
 <router-outlet></router-outlet>
