@@ -23,7 +23,7 @@ import { TauntsComponent } from './taunts/taunts.component';
 @NgModule({
   declarations: [
     AppComponent,
-    LoginScreenComponent,
+    LoginComponent,
     NavBarComponent,
     HomeComponent,
     ProfileComponent,
