@@ -19,6 +19,7 @@ import { ChessboardComponent } from './chessboard/chessboard.component';
 import { BoardComponent } from './board/board.component';
 import { TauntsComponent } from './taunts/taunts.component';
 import { UserLoginService } from './user-login.service';
+import { SocketService } from './socket.service'
 
 
 @NgModule({
@@ -40,7 +41,7 @@ import { UserLoginService } from './user-login.service';
     FormsModule,
     AppRoutingModule
   ],
-  providers: [BlogsService, ProfileService, LeaderboardServiceService,UserLoginService],
+  providers: [BlogsService, ProfileService, LeaderboardServiceService,UserLoginService, SocketService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
