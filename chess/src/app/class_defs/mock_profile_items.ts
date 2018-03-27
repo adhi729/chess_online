@@ -10,9 +10,9 @@ export const PROFILE: Profile[] = [
   draw_percent: 28.57,
   matches : MATCH,
   ratings:{
-    fide: 1250;
-    insti: 7;
-    blah: 85;
+    fide: 1250,
+    insti: 7,
+    blah: 85,
   }
 },
 {
@@ -23,9 +23,9 @@ export const PROFILE: Profile[] = [
   draw_percent: 28.57,
   matches : MATCH,
   ratings:{
-    fide: 1250;
-    insti: 7;
-    blah: 85;
+    fide: 1250,
+    insti: 7,
+    blah: 85,
   }
 }
 ]
