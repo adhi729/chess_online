@@ -20,10 +20,12 @@ export class AppComponent {
   }
   
 private sendMessageTemp(){
-    this.socketService.sendUsername();
+    console.log("sending temp message");
+    //this.socketService.sendUsername();
     this.socketService.sendMessages();
   }
  getMessages():void{
+   console.log("getting messages")
    this.socketService.getMessages()
       .subscribe(messages => this.messages = messages);
  }

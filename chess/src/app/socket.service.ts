@@ -18,6 +18,7 @@ ngOnInit():void{
 	this.sendUsername();
 }
 sendUsername():void{
+	console.log("sending username")
     this.Socket.emit('username', "venket");
     this.Socket.on('checking', function(data) {
       console.log(data);
