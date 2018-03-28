@@ -3,6 +3,7 @@ import { LoginComponent } from './login/login.component';
 import { NavBarComponent } from './nav-bar/nav-bar.component'
 import { Message } from './class_defs/message_item'
 import { SocketService } from './socket.service'
+import * as io from 'socket.io-client';
 
 @Component({
   selector: 'app-root',
@@ -10,29 +11,20 @@ import { SocketService } from './socket.service'
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  socket;
   title = 'app';
-  messages : Message[];
-  messageContent : string;
-  ioConnection: any;
-
-  constructor(private socketService: SocketService){}
-
-  ngOnInit(): void{
-  	this.initIoConnection();
+  ngOnInit(): void{  
+    this.sendUsername();
   }
+  constructor(){
+    this.socket = io();
+  }
+  private sendUsername():void{
+    this.socket.emit('username', "venket");
+    this.socket.on('checking', function(data) {
+      console.log(data);
+    });
 
-  private initIoConnection(): void {
-    this.socketService.initSocket();
-
-    this.ioConnection = this.socketService.onMessage()
-      .subscribe((message: Message) => {
-        this.messages.push(message);
-});
-}
-   public sendMessage(message: string): void {
-    console.log(message)
-    this.socketService.sendMessage({data:message});
-    console.log(this.socketService)
-    this.messageContent = null;
-}
+  }
+  
 }

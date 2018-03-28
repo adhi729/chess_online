@@ -6,7 +6,8 @@ import { ProfileComponent } from './profile/profile.component';
 import { LeaderboardComponent } from './leaderboard/leaderboard.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { PlayOnlineComponent } from './play-online/play-online.component';
-import { ChessboardComponent } from './chessboard/chessboard.component'
+import { ChessboardComponent } from './chessboard/chessboard.component';
+import { ChatComponent } from './chat/chat.component';
 
 
 const routes: Routes = [
