@@ -1,29 +1,34 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { Observer } from 'rxjs/Observer';
+import { of } from 'rxjs/observable/of';
 import { Message } from './class_defs/message_item';
 
-import * as socketIo from 'socket.io-client';
+import * as io from 'socket.io-client';
 
-const SERVER_URL =  'http://localhost:3000';
 
 @Injectable()
 export class SocketService {
 	private Socket;
+	messages: Message[] = []; 
+	messageDummy: Message = {data: "loooooll"};
+  constructor() { 
+	this.Socket = io();
+}
+ngOnInit():void{
+	this.sendUsername();
+}
+sendUsername():void{
+    this.Socket.emit('username', "venket");
+    this.Socket.on('checking', function(data) {
+      console.log(data);
+    });
 
-	public initSocket(): void{
-		console.log("here")
-		this.Socket = socketIo(SERVER_URL);
-	}
-	public sendMessage(message: Message): void{
-		this.Socket.emit('message', message);
-	}
-	public onMessage(): Observable<Message>{
-		return new Observable<Message>(Observer => {
-			this.Socket.on('message', (data: Message) => Observer.next(data));
-		});
-	}
-
-  constructor() { }
+  }
+sendMessages(){
+	this.messages.push(this.messageDummy);
+}
+getMessages(): Observable<Message[]>{
+	return of(this.messages)
+}
 
 }

@@ -13,18 +13,18 @@ import * as io from 'socket.io-client';
 export class AppComponent {
   socket;
   title = 'app';
+  messages: Message[] = [];
   ngOnInit(): void{  
-    this.sendUsername();
   }
-  constructor(){
-    this.socket = io();
-  }
-  private sendUsername():void{
-    this.socket.emit('username', "venket");
-    this.socket.on('checking', function(data) {
-      console.log(data);
-    });
-
+  constructor(private socketService: SocketService){
   }
   
+private sendMessageTemp(){
+    this.socketService.sendUsername();
+    this.socketService.sendMessages();
+  }
+ getMessages():void{
+   this.socketService.getMessages()
+      .subscribe(messages => this.messages = messages);
+ }
 }

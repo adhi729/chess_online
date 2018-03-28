@@ -54,10 +54,10 @@ io.on('connection', (socket) => {
     var matchid = obj.match_id;
     var whiteplayer = matchid.slice(0,(matchid.length)/2);
     var blackplayer = matchid.slice((matchid.length)/2,matchid.length);
-    User.Allmatch.find({matchid:matchid},function(err,match){
-      match[0].scoresheet.push(moveContent);
-      match[0].save();
-    });
+    // User.Allmatch.find({matchid:matchid},function(err,match){
+    //   match[0].scoresheet.push(moveContent);
+    //   match[0].save();
+    // });
     if(whiteplayer != obj.user_id)
     {
       allsockets[whiteplayer].emit('getmatchmove',obj);
