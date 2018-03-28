@@ -15,6 +15,7 @@ export class SocketService {
 	this.Socket = io();
 }
 ngOnInit():void{
+	console.log("lolololollo");
 	this.sendUsername();
 }
 sendUsername():void{
@@ -24,6 +25,9 @@ sendUsername():void{
       console.log(data);
     });
 
+  }
+  clearMessages(){
+  	this.messages = [];
   }
 sendMessages(){
 	this.messages.push(this.messageDummy);

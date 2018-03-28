@@ -15,6 +15,7 @@ export class AppComponent {
   title = 'app';
   messages: Message[] = [];
   ngOnInit(): void{  
+    this.getMessages();
   }
   constructor(private socketService: SocketService){
   }
