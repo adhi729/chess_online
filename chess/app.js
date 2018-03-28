@@ -3,14 +3,17 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+
 
 var book = require('./routes/book');
 var user = require('./routes/user');
 var admin = require('./routes/admin');
+var chat = require('./routes/chat');
 // var myapp = require('./src/');
 var app = express();
+// var http = require('http').Server(app);
+// var io = require('socket.io')(http);
+
 
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
@@ -26,6 +29,7 @@ app.use('/books', express.static(path.join(__dirname, 'dist')));
 app.use('/book', book);
 app.use('/user',user);
 app.use('/admin',admin);
+app.use('/chat',chat);
 // app.use('/',myapp);
 
 // catch 404 and forward to error handler
@@ -44,16 +48,6 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
-});
-
-io.on('connection', function(socket){
-  console.log('a user connected');
-  socket.on('username',function(name){
-  	users[name] = socket;
-  });
-  socket.on('chat message', function(msg){
-  	io.emit('chat message', msg);
-  });
 });
 
 
