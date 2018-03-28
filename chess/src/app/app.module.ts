@@ -20,8 +20,6 @@ import { BoardComponent } from './board/board.component';
 import { TauntsComponent } from './taunts/taunts.component';
 import { UserLoginService } from './user-login.service';
 import { SocketService } from './socket.service';
-import { ChatService } from './chat.service';
-import { ChatComponent } from './chat/chat.component';
 
 
 @NgModule({
@@ -37,14 +35,13 @@ import { ChatComponent } from './chat/chat.component';
     ChessboardComponent,
     BoardComponent,
     TauntsComponent,
-    ChatComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     AppRoutingModule
   ],
-  providers: [BlogsService, ProfileService, LeaderboardServiceService,UserLoginService, SocketService, ChatService],
+  providers: [BlogsService, ProfileService, LeaderboardServiceService,UserLoginService, SocketService,],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
