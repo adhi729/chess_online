@@ -9,21 +9,19 @@ import { UserLoginService } from '../user-login.service';
 export class NavBarComponent implements OnInit {
 
 	sessionID = 'lpwpldwkodww'
-	profile = {
-		roll : '',
-		
-	}
+	profile: string = "";
 
 
-  constructor(private user: UserLoginService) { }
+  constructor(private userloginservice: UserLoginService) { }
 
   ngOnInit() {
-    this.setUserName;
+    console.log(this.profile)
+    this.setUserName();
   }
   setUserName():void{
-    console.log(this.user.getUserLoggedIn,"nav");
-    if (this.user.getUserLoggedIn){
-      this.profile.roll = this.user.getUserName();
-    }
+    this.userloginservice.getUserName()
+      .subscribe(profile => this.profile = profile);
+      
+    console.log(this.profile)
   }
 }

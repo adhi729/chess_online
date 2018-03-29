@@ -27,6 +27,7 @@ sendUsername():void{
 
   }
   clearMessages(){
+  	console.log(this.messages)
   	this.messages = [];
   }
 sendMessages(){

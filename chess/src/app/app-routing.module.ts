@@ -7,12 +7,12 @@ import { LeaderboardComponent } from './leaderboard/leaderboard.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { PlayOnlineComponent } from './play-online/play-online.component';
 import { ChessboardComponent } from './chessboard/chessboard.component';
-
+import { AuthGuardGuard } from './auth-guard.guard';
 
 const routes: Routes = [
-  { path: 'home', component: HomeComponent },
-  { path:'profile/:id', component:ProfileComponent },
-  { path:'play', component:ChessboardComponent },  
+  { path: 'home',component: HomeComponent },
+  { path:'profile/:id', canActivate:[AuthGuardGuard] ,component:ProfileComponent },
+  { path:'play',canActivate:[AuthGuardGuard] , component:ChessboardComponent },  
   { path:'leaderboard', component:LeaderboardComponent },
   { path:'test', component:LoginComponent },
   { path: '', component:LoginComponent},

@@ -20,6 +20,7 @@ import { BoardComponent } from './board/board.component';
 import { TauntsComponent } from './taunts/taunts.component';
 import { UserLoginService } from './user-login.service';
 import { SocketService } from './socket.service';
+import { AuthGuardGuard } from './auth-guard.guard';
 
 
 @NgModule({
@@ -41,7 +42,7 @@ import { SocketService } from './socket.service';
     FormsModule,
     AppRoutingModule
   ],
-  providers: [BlogsService, ProfileService, LeaderboardServiceService,UserLoginService, SocketService,],
+  providers: [BlogsService, ProfileService, LeaderboardServiceService,UserLoginService, SocketService,AuthGuardGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

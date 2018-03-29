@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
 
 @Injectable()
 export class UserLoginService {
 	private isUserLoggedIn: boolean = false;
-	private userName: string;
+	private userName: string = "poinku";
 
 	getUserLoggedIn(): boolean{
 		return this.isUserLoggedIn;
@@ -17,8 +19,9 @@ export class UserLoginService {
 		this.userName = '';
 		return true;
 	}
-	getUserName(): string{
-		return this.userName;
+	getUserName(): Observable<string>{
+		console.log(this.userName,"lol")
+		return of(this.userName);
 	}
   constructor() { }
 
