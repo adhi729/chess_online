@@ -1,0 +1,7 @@
+.taunts{
+	position:relative;
+	top: 25vh;
+	height:50vh;
+	width: 40vw;
+	overflow: hidden;
+}

@@ -13,18 +13,23 @@ import * as io from 'socket.io-client';
 export class AppComponent {
   socket;
   title = 'app';
-  messages: Message[] = [];
+  messages: Message[];
   ngOnInit(): void{  
     this.getMessages();
   }
   constructor(private socketService: SocketService){
   }
   
-private sendMessageTemp(){
+sendMessageTemp(){
     console.log("sending temp message");
     //this.socketService.sendUsername();
     this.socketService.sendMessages();
   }
+ clearMessages():void{
+   console.log("clearing temp message");
+   this.socketService.clearMessages();
+   this.messages = []
+ }
  getMessages():void{
    console.log("getting messages")
    this.socketService.getMessages()

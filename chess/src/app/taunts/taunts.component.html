@@ -1,6 +1,6 @@
-<div>
+<div class="taunts">
 	<div class="messages">
-		<li *ngFor="let message of messages">{{message}}</li>
+		<p *ngFor="let message of messages">{{message}}</p>
 	</div>
 	<div class="message">
 		<input type="string" placeholder="send taunts" [(ngModel)]="message">

@@ -1,0 +1,24 @@
+.rightColumn{
+	float: right;
+	display: block;
+	height: 100%;
+	width: 40vw;
+	top:0px;
+	right: 0px;
+	position: absolute;
+	z-index: -1;
+	background-color: gray;
+	padding: 10px;
+}
+
+.leftColumn{
+	float: left;
+	display: block;
+	height: 100%;
+	width: 60vw;
+	top:0px;
+	left: 0px;
+	position: absolute;
+	z-index: -1;
+	background-color: black;
+}

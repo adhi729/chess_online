@@ -19,8 +19,6 @@ loginUser(e):void{
 		var userid = e.target.elements[0].value;
 		var pass = e.target.elements[1].value;
 		if (userid=="user" && pass =="user"){
-
-			console.log(this.user.getUserLoggedIn,"login")
 			this.user.setUserLoggedIn(userid);
 			this.router.navigate(['home']);
 

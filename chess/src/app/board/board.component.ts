@@ -12,17 +12,22 @@ import { boardIniState } from '../class_defs/board_state';
 
 export class BoardComponent implements OnInit {
 	squares: board_square[] = [] ;
+	orient: number = window.innerWidth / window.innerHeight;
+	square_width: number;
+	setBoardSize(): void{
+		this.square_width = window.innerHeight/10;
+	}
+
 	customStyle(square: board_square): any {
+		this.setBoardSize();
 		let tempColor = (square.id.x+square.id.y)%2 ? true : false;
 		let tempActive = (square.status == "active")? true : false;
-		let square_width = window.innerWidth/10;
-		let square_height = window.innerHeight/10;
 		return {
-			'background-color' : tempColor ? 'lightBlue' : 'Blue',
-			'width': String(square_width)+'px',
-			'height': String(square_width)+'px',
-			'top': String(square.id.x*square_width)+'px',
-			'left': String(square.id.y*square_width)+'px',
+			'background-color' : tempColor ? 'orange' : 'red',
+			'width': String(this.square_width)+'px',
+			'height': String(this.square_width)+'px',
+			'top': String(square.id.x*this.square_width)+'px',
+			'left': String(square.id.y*this.square_width)+'px',
 			'position': 'absolute',
 			'overflow': 'hidden',
 			'box-shadow': tempActive? 'inset 0px 0px 5px 5px black': 'none',
@@ -39,6 +44,10 @@ export class BoardComponent implements OnInit {
 			this.squares = squares;
 		}
 	};
+	private matchId: string = "";
+	private player_1: string;
+	private player_2: string;
+	private kingPosition: {x:number, y:number} = {x:8,y:5};
 	private MoveCount :{king: boolean; rook_right: boolean; rook_left: boolean;} = {king: false, rook_left: false, rook_right: false};
 	private makeMoveSquare : board_square = null;
 	private activeSquares: number[] = [];
@@ -414,15 +423,39 @@ export class BoardComponent implements OnInit {
 		return false;
 	}
 
-	private commitMove(id_1: number, id_2: number): void{
+	private commitMove(id_1: number, id_2: number): boolean{
+
+		if(this.checkCheck(this.kingPosition.x,this.kingPosition.y)){
+			return false;
+		}
+		if(this.squares[id_1].piece.slice(0,-9) == "king"){
+			let temp = {x:(id_2 - id_2%8)/8 +1 ,y:id_2%8 +1};
+			if(this.checkCheck(temp.x,temp.y)){
+				return false;		
+			}
+		}
 		if (this.squares[id_2].piece.length != 0 ){
 			this.piecesTake[0].push(this.squares[id_2].piece);
 			this.squares[id_2].piece = this.squares[id_1].piece;
 			this.squares[id_1].piece = "";
+			if (this.checkCheck(this.kingPosition.x, this.kingPosition.y)){
+				this.squares[id_1].piece = this.squares[id_2].piece;
+				this.squares[id_2].piece = this.piecesTake[0][-1];
+				this.piecesTake[0].pop();
+				return false;
+			}
 		} else{
 			this.squares[id_2].piece = this.squares[id_1].piece;
 			this.squares[id_1].piece = "";
+			if (this.checkCheck(this.kingPosition.x, this.kingPosition.y)){
+				this.squares[id_1].piece = this.squares[id_2].piece;
+				this.squares[id_2].piece = "";
+				return false;
+			}
 		}
+		
+		return true;
+		
 	}
 	changeStatus(id: number): void{
 		if( this.squares[id].status.length == 0){
@@ -443,11 +476,10 @@ export class BoardComponent implements OnInit {
 			
 		} else{
 			if (square !=  this.makeMoveSquare && square.status == "active" ){
-				this.squares[square.id.x*8 + square.id.y-9].piece = this.squares[this.makeMoveSquare.id.x*8+this.makeMoveSquare.id.y - 9].piece;
-				
-				this.squares[this.makeMoveSquare.id.x*8+this.makeMoveSquare.id.y - 9].piece = "";
-				let hello: boolean = this.checkCheck(1,5);
-				if (hello == true){alert("check")} 
+				//this.squares[square.id.x*8 + square.id.y-9].piece = this.squares[this.makeMoveSquare.id.x*8+this.makeMoveSquare.id.y - 9].piece;
+				//this.squares[this.makeMoveSquare.id.x*8+this.makeMoveSquare.id.y - 9].piece = "";
+				let hello = this.commitMove(this.makeMoveSquare.id.x*8+this.makeMoveSquare.id.y - 9,square.id.x*8 + square.id.y-9);
+				if (hello == false){alert("check")} 
 			};
 			this.squares[this.makeMoveSquare.id.x*8+this.makeMoveSquare.id.y - 9].status = "" ;
 			for (let key of this.activeSquares)	{
