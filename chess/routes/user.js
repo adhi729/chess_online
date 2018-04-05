@@ -34,57 +34,61 @@ router.get('/auth', function(req, res, next) {
 	else
 	{
 		myres.isauthenticated = true;
+
+
 		// Adminsonline.push({userid: myres.userid, sessionid: myres.sessionid});
 		User.Users.find({roll: req.headers['userid']},function (err, founduser){
 			if (err) return next(err);
-			if(!founduser) 
+			console.log(founduser);
+			if(founduser.length == 0) 
 			{
-				var j = 0;
-				User.Users.create({roll:username},function(err,createduser){
+				User.Users.create({roll:req.headers['userid']},function(err,createduser){
 					if (err) return next(err);
 					myres.userid = createduser._id;
 					User.Useronline.create({userid:createduser._id},function(err,onlineuser){
 						if (err) return next(err);
 						myres.sessionid = onlineuser._id;
-						j = 1;
+						res.json(myres);
 					}); 
 				});
-				while(j!=1){require('deasync').sleep(1);}
 			}
 			else
 			{
-				myres.userid = founduser._id;
-				User.Useronline.find({userid:founduser._id},function(err,onlineuser){
+				myres.userid = founduser[0]._id;
+				User.Useronline.find({userid:founduser[0]._id},function(err,onlineuser){
 					if (err) return next(err);
-					if(!onlineuser)
+					if(onlineuser.length == 0)
 					{
-						User.Useronline.create({userid:founduser._id},function(err,nowonline){
+						User.Useronline.create({userid:founduser[0]._id},function(err,nowonline){
 							if (err) return next(err);
 							myres.sessionid = nowonline._id;
+							res.json(myres);
 						});
 					}
 					else
 					{
-						myres.sessionid = onlineuser._id;
+						myres.sessionid = onlineuser[0]._id;
+						res.json(myres);
 					}
 				});
 			}
 		}); 	
 	}
-	res.json(myres);
+	
 });
 
-/* Logout Admin */
+/* Logout User */
 router.post('/auth', function(req, res, next) {
 	var found = 0,index;
 	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
 
 	User.Useronline.find({userid:req.headers['userid']},function(err,onlineuser){
-		if(!onlineuser) { return res.status(404).send('Not Found'); }
-		User.Useronline.findByIdAndRemove(onlineuser._id, function (err, post) {
+		if (err) return next(err);
+		if(onlineuser.length == 0) { return res.status(404).send('Not Found'); }
+		User.Useronline.findByIdAndRemove(onlineuser[0]._id, function (err, post) {
 			if (err) return next(err);
 			var myres = {success: true};
-			return res.json(myres);
+			res.json(myres);
 		});
 	});
 	
@@ -92,11 +96,11 @@ router.post('/auth', function(req, res, next) {
 
 /* All Blogs */
 router.get('/blog', function(req, res, next) {
-	var found = 0;
+	
 	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
 
 	User.Useronline.find({userid:req.headers['userid']},function(err,onlineuser){
-		if(!onlineuser) { return res.status(404).send('Not Found'); }
+		if(onlineuser.length == 0) { return res.status(404).send('Not Found'); }
 		User.Blog.find(function (err, products) {
 			if (err) return next(err);
 			var myres = [];
@@ -112,11 +116,11 @@ router.get('/blog', function(req, res, next) {
 
 /* Single Blog By ID */
 router.get('/blog/:id', function(req, res, next) {
-	var found = 0;
+	
 	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
 
 	User.Useronline.find({userid:req.headers['userid']},function(err,onlineuser){
-		if(!onlineuser) { return res.status(404).send('Not Found'); }
+		if(onlineuser.length == 0) { return res.status(404).send('Not Found'); }
 		User.Blog.findById(req.params.id, function (err, post) {
 			if (err) return next(err);
 			res.json(post);
@@ -126,11 +130,11 @@ router.get('/blog/:id', function(req, res, next) {
 
 /* Display Profile */
 router.get('/:id', function(req, res, next) {
-	var found = 0;
+	
 	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
 
 	User.Useronline.find({userid:req.headers['userid']},function(err,onlineuser){
-		if(!onlineuser) { return res.status(404).send('Not Found'); }
+		if(onlineuser.length == 0) { return res.status(404).send('Not Found'); }
 
 		User.Users.findById(req.params.id, function (err, post) {
 			if (err) return next(err);
@@ -147,10 +151,10 @@ router.get('/leaderboard',function(req, res, next) {
 	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
 
 	User.Useronline.find({userid:req.headers['userid']},function(err,onlineuser){
-		if(!onlineuser) { return res.status(404).send('Not Found'); }
+		if(onlineuser.length == 0) { return res.status(404).send('Not Found'); }
 		User.Users.find().sort({ instirating : -1 },function(err,userobj){
 		    if (err) return next(err);
-		    if(!userobj) { return res.status(404).send('Not Found'); }
+		    if(userobj.length == 0) { return res.status(404).send('Not Found'); }
 		    if(userobj.length <= 10)
 		    {
 		    	var jsonret = JSON.stringify(userobj);

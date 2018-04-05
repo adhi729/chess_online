@@ -18,6 +18,75 @@ if (typeof atob === 'undefined') {
   };
 }
 
+function changerating(white,black,result)
+{
+	var ratediff = Math.abs(white.instirating - black.instirating),h,l;
+	if(ratediff < 17)
+		h = 0.52;
+	else if(ratediff < 39)
+		h = 0.55;
+	else if(ratediff < 61)
+		h = 0.58;
+	else if(ratediff < 83)
+		h = 0.61;
+	else if(ratediff < 106)
+		h = 0.64;
+	else if(ratediff < 129)
+		h = 0.67;
+	else if(ratediff < 153)
+		h = 0.7;
+	else if(ratediff < 179)
+		h = 0.73;
+	else if(ratediff < 215)
+		h = 0.77;
+	else if(ratediff < 245)
+		h = 0.8;
+	else if(ratediff < 278)
+		h = 0.83;
+	else if(ratediff < 315)
+		h = 0.86;
+	else if(ratediff < 357)
+		h = 0.89;
+	else if(ratediff < 391)
+		h = 0.91;
+	else if(ratediff < 456)
+		h = 0.94;
+	else if(ratediff < 559)
+		h = 0.97;
+	else
+		h = 1;
+
+	if(white.instirating < black.instirating)
+		h = 1-h;
+	l = 1-h;
+
+		
+	if(result == 1)
+	{
+		white.instirating = white.instirating + 25*(1-h);
+		black.instirating = black.instirating - 25*(1-h);
+		if(black.instirating < 800)
+			black.instirating = 800;
+	}
+	if(result == 2)
+	{
+		white.instirating = white.instirating + 25*(0.5-h);
+		black.instirating = black.instirating + 25*(0.5-l);
+		if(black.instirating < 800)
+			black.instirating = 800;
+		if(white.instirating < 800)
+			white.instirating = 800;		
+	}
+	if(result == 3)
+	{
+		white.instirating = white.instirating - 25*h;
+		black.instirating = black.instirating + 25*h;
+		if(white.instirating < 800)
+			white.instirating = 800;			
+	}
+
+}
+
 
 var Admins = [
 	{userid : btoa("admin1"), password: btoa("starks")},
@@ -200,9 +269,9 @@ router.post('/matches', function(req, res, next) {
 	var j = 0;
 	for(var i =0 ;i< fixtures.length ; i++)
 	{
-		User.Users.find({roll: fixtures.white},function(err,white){
+		User.Users.find({roll: fixtures[i].white},function(err,white){
 			if (err) return next(err);
-			User.Users.find({roll: fixtures.black},function(err,black){
+			User.Users.find({roll: fixtures[i].black},function(err,black){
 				if (err) return next(err);
 				var newid = white[0]._id + black[0]._id;
 				User.Allmatch.create({matchid: newid, type : req.body.type , round : req.body.round}, function(err,match){
@@ -222,7 +291,7 @@ router.post('/matches', function(req, res, next) {
 			});
 		});
 	}
-	while(j!=fixtures.length) {require('deasync').sleep(10);}
+	while(j!=fixtures.length) {require('deasync').sleep(100);}
 });
 
 router.post('/changeresult', function(req, res, next){
@@ -262,6 +331,11 @@ router.post('/changeresult', function(req, res, next){
 						break;	
 					}
 				}
+				if(result == 1)
+					white.matcheswon = white.matcheswon + 1;
+				else if(result == 3)
+					black.matcheswon = black.matcheswon + 1;
+				changerating(white,black,result);
 				white.save();
 				black.save();
 				
