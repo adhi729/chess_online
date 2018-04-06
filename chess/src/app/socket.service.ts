@@ -23,15 +23,16 @@ sendUsername(username:string):void{
     this.Socket.on('checking', function(data) {
       console.log(data);
     });
+    this.Socket.on('makeMove', function(data) {
+      console.log(data);
+    });
   }
 
 makeMove(userId:string, matchId: string, move: number): void{
   console.log("hitted socket service")
    this.Socket.emit('makeMove',{'userId': userId, 'matchId':matchId, 'move': move});
-   console.log("ëmitted?");
-   this.Socket.on('makeMove', function(data) {
-      console.log(data);
-    });
+   console.log("ëmitted?");  
+   
 }
 
   clearMessages(){
