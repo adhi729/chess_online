@@ -15,12 +15,12 @@ export class SocketService {
 	this.Socket = io();
 }
 ngOnInit():void{
-	console.log("lolololollo");
-	this.sendUsername();
+	// console.log("lolololollo");
+	// this.sendUsername();
 }
-sendUsername():void{
+sendUsername(username:string):void{
 	console.log("sending username")
-    this.Socket.emit('username', "venket");
+    this.Socket.emit('username',username);
     this.Socket.on('checking', function(data) {
       console.log(data);
     });

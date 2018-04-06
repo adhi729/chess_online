@@ -20,10 +20,10 @@ export class AppComponent {
   constructor(private socketService: SocketService){
   }
   
-sendMessageTemp(){
+sendMessageTemp(id:number){
     console.log("sending temp message");
     //this.socketService.sendUsername();
-    this.socketService.sendUsername();
+    this.socketService.sendUsername(String(id));
   }
  clearMessages():void{
    console.log("clearing temp message");
