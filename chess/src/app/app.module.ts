@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 
 
 import { AppComponent } from './app.component';
@@ -21,6 +22,7 @@ import { TauntsComponent } from './taunts/taunts.component';
 import { UserLoginService } from './user-login.service';
 import { SocketService } from './socket.service';
 import { AuthGuardGuard } from './auth-guard.guard';
+import { BlogComponent } from './blog/blog.component';
 
 
 @NgModule({
@@ -36,11 +38,13 @@ import { AuthGuardGuard } from './auth-guard.guard';
     ChessboardComponent,
     BoardComponent,
     TauntsComponent,
+    BlogComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule,
   ],
   providers: [BlogsService, ProfileService, LeaderboardServiceService,UserLoginService, SocketService,AuthGuardGuard],
   bootstrap: [AppComponent]

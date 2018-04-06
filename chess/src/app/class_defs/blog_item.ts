@@ -1,6 +1,7 @@
 export class Blog {
   id: number;
-  name: string;
-  details: string;
+  title: string;
+  subtitle: string;
+  content: string;
   timestamp: Date;
 }

@@ -1,7 +1,7 @@
 .nav-bar{
 	width: 100vw;
 	height: 10vh;
-	background-color: red;
+	background-color: darkred;
 	color: white;
     font-family: 'Lato', sans-serif;
     position: absolute;
@@ -20,7 +20,10 @@ span{
 }
 
 span:hover{
-	background-color: blue; 
+	background-color: red; 
+}
+span:active{
+	background-color: red; 
 }
 
 .profile{
