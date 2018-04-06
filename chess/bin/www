@@ -35,7 +35,8 @@ io.on('connection', (socket) => {
   socket.on('username',function(name){
     console.log(name);
     allsockets[name] = socket;
-    // allsockets[name].emit('checking',"printthis");
+    socket.emit('checking',"printing1");
+    (allsockets[name]).emit('checking',"printing2");
   });
   socket.on('sendMessage',function(obj){
     var matchid = obj.match_id;
@@ -60,6 +61,8 @@ io.on('connection', (socket) => {
     //   match[0].save();
     // });
     console.log(obj.userId);
+    console.log(whiteplayer);
+    console.log(blackplayer);
     if(whiteplayer != obj.userId)
     {
       allsockets[whiteplayer].emit('makeMove',obj);
