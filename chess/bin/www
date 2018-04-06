@@ -33,6 +33,7 @@ io.on('connection', (socket) => {
     console.log('User disconnected');
   });
   socket.on('username',function(name){
+    console.log(name);
     allsockets[name] = socket;
     // allsockets[name].emit('checking',"printthis");
   });
@@ -50,21 +51,21 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('sendmatchmove',function(obj){
-    var matchid = obj.match_id;
+  socket.on('makeMove',function(obj){
+    var matchid = obj.matchId;
     var whiteplayer = matchid.slice(0,(matchid.length)/2);
     var blackplayer = matchid.slice((matchid.length)/2,matchid.length);
     // User.Allmatch.find({matchid:matchid},function(err,match){
     //   match[0].scoresheet.push(moveContent);
     //   match[0].save();
     // });
-    if(whiteplayer != obj.user_id)
+    if(whiteplayer != obj.userId)
     {
-      allsockets[whiteplayer].emit('getmatchmove',obj);
+      allsockets[whiteplayer].emit('makeMove',obj);
     }
     else
     {
-      allsockets[blackplayer].emit('getmatchmove',obj); 
+      allsockets[blackplayer].emit('makeMove',obj); 
     }
   });
 

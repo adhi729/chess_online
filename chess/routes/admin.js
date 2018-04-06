@@ -89,21 +89,21 @@ function changerating(white,black,result)
 
 
 var Admins = [
-	{userid : btoa("admin1"), password: btoa("starks")},
-	{userid : btoa("admin2"), password: btoa("lannisters")},
-	{userid : btoa("admin3"), password: btoa("targaryans")},
-	{userid : btoa("admin4"), password: btoa("tyrells")}
+	{userId : btoa("admin1"), password: btoa("starks")},
+	{userId : btoa("admin2"), password: btoa("lannisters")},
+	{userId : btoa("admin3"), password: btoa("targaryans")},
+	{userId : btoa("admin4"), password: btoa("tyrells")}
 ];
 var Adminsonline = [];
 
 /* Create Blog */
 router.post('/blog', function(req, res, next) {
 	var found = 0;
-	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
+	if(typeof req.headers['userId'] == 'undefined') { return res.status(404).send('Not Found'); }
 
 	for(var i=0; i< Adminsonline.length; i++)
 	{
-		if(Adminsonline[i].userid === req.headers['userid']) { found = 1; }
+		if(Adminsonline[i].userId === req.headers['userId']) { found = 1; }
 	}
 	if(found == 0) { return res.status(404).send('Not Found'); }
 
@@ -116,11 +116,11 @@ router.post('/blog', function(req, res, next) {
 /* Update Blog */
 router.put('/blog/:id', function(req, res, next) {
 	var found = 0;
-	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
+	if(typeof req.headers['userId'] == 'undefined') { return res.status(404).send('Not Found'); }
 
 	for(var i=0; i< Adminsonline.length; i++)
 	{
-		if(Adminsonline[i].userid === req.headers['userid']) { found = 1; }
+		if(Adminsonline[i].userId === req.headers['userId']) { found = 1; }
 	}
 	if(found == 0) { return res.status(404).send('Not Found'); }
 
@@ -133,11 +133,11 @@ router.put('/blog/:id', function(req, res, next) {
 /* Delete Blog */
 router.delete('/blog/:id', function(req, res, next) {
 	var found = 0;
-	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
+	if(typeof req.headers['userId'] == 'undefined') { return res.status(404).send('Not Found'); }
 
 	for(var i=0; i< Adminsonline.length; i++)
 	{
-		if(Adminsonline[i].userid === req.headers['userid']) { found = 1; }
+		if(Adminsonline[i].userId === req.headers['userId']) { found = 1; }
 	}
 	if(found == 0) { return res.status(404).send('Not Found'); }
 
@@ -150,11 +150,11 @@ router.delete('/blog/:id', function(req, res, next) {
 /* All Blogs */
 router.get('/blog', function(req, res, next) {
 	var found = 0;
-	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
+	if(typeof req.headers['userId'] == 'undefined') { return res.status(404).send('Not Found'); }
 
 	for(var i=0; i< Adminsonline.length; i++)
 	{
-		if(Adminsonline[i].userid === req.headers['userid']) { found = 1; }
+		if(Adminsonline[i].userId === req.headers['userId']) { found = 1; }
 	}
 	if(found == 0) { return res.status(404).send('Not Found'); }
 
@@ -173,11 +173,11 @@ router.get('/blog', function(req, res, next) {
 /* Single Blog By ID */
 router.get('/blog/:id', function(req, res, next) {
 	var found = 0;
-	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
+	if(typeof req.headers['userId'] == 'undefined') { return res.status(404).send('Not Found'); }
 
 	for(var i=0; i< Adminsonline.length; i++)
 	{
-		if(Adminsonline[i].userid === req.headers['userid']) { found = 1; }
+		if(Adminsonline[i].userId === req.headers['userId']) { found = 1; }
 	}
 	if(found == 0) { return res.status(404).send('Not Found'); }
 
@@ -190,27 +190,27 @@ router.get('/blog/:id', function(req, res, next) {
 /* Authenticate Admin */
 router.get('/auth', function(req, res, next) {
 	var found = 0;
-	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
+	if(typeof req.headers['userId'] == 'undefined') { return res.status(404).send('Not Found'); }
 
-	if(req.headers['ldap'] === btoa("admin1starks") && req.headers['userid'] === btoa("admin1")){found = 1;}
-	if(req.headers['ldap'] === btoa("admin2lannisters") && req.headers['userid'] === btoa("admin2")){found = 1;}
-	if(req.headers['ldap'] === btoa("admin3targaryans") && req.headers['userid'] === btoa("admin3")){found = 1;}
-	if(req.headers['ldap'] === btoa("admin4tyrells") && req.headers['userid'] === btoa("admin4")){found = 1;}
+	if(req.headers['ldap'] === btoa("admin1starks") && req.headers['userId'] === btoa("admin1")){found = 1;}
+	if(req.headers['ldap'] === btoa("admin2lannisters") && req.headers['userId'] === btoa("admin2")){found = 1;}
+	if(req.headers['ldap'] === btoa("admin3targaryans") && req.headers['userId'] === btoa("admin3")){found = 1;}
+	if(req.headers['ldap'] === btoa("admin4tyrells") && req.headers['userId'] === btoa("admin4")){found = 1;}
 
-	var myres = {isauthenticated: false, userid: "", sessionid: "" };
+	var myres = {isauthenticated: false, userId: "", sessionid: "" };
 
 	if(found == 0) 
 	{ 
 		myres.isauthenticated = false;
-		myres.userid = "random";
+		myres.userId = "random";
 		myres.sessionid = "random"; 
 	}
 	else
 	{
 		myres.isauthenticated = true;
-		myres.userid = req.headers['userid'];
-		myres.sessionid = btoa(atob(req.headers['userid']) + atob(req.headers['userid']));
-		Adminsonline.push({userid: myres.userid, sessionid: myres.sessionid}); 	
+		myres.userId = req.headers['userId'];
+		myres.sessionid = btoa(atob(req.headers['userId']) + atob(req.headers['userId']));
+		Adminsonline.push({userId: myres.userId, sessionid: myres.sessionid}); 	
 	}
 	res.json(myres);
 });
@@ -218,11 +218,11 @@ router.get('/auth', function(req, res, next) {
 /* Logout Admin */
 router.post('/auth', function(req, res, next) {
 	var found = 0,index;
-	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
+	if(typeof req.headers['userId'] == 'undefined') { return res.status(404).send('Not Found'); }
 
 	for(var i=0; i< Adminsonline.length; i++)
 	{
-		if(Adminsonline[i].userid === req.headers['userid']) { found = 1; index = i; break; }
+		if(Adminsonline[i].userId === req.headers['userId']) { found = 1; index = i; break; }
 	}
 	var myres = {success: true};
 	if(found == 0) { return res.status(404).send('Not Found'); }
@@ -233,11 +233,11 @@ router.post('/auth', function(req, res, next) {
 /* Send json */
 router.get('/sendratings', function(req, res, next) {
 	var found = 0;
-	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
+	if(typeof req.headers['userId'] == 'undefined') { return res.status(404).send('Not Found'); }
 
 	for(var i=0; i< Adminsonline.length; i++)
 	{
-		if(Adminsonline[i].userid === req.headers['userid']) { found = 1; }
+		if(Adminsonline[i].userId === req.headers['userId']) { found = 1; }
 	}
 	if(found == 0) { return res.status(404).send('Not Found'); }
 
@@ -257,11 +257,11 @@ router.get('/sendratings', function(req, res, next) {
 /* Get Matches */
 router.post('/matches', function(req, res, next) {
 	var found = 0;
-	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
+	if(typeof req.headers['userId'] == 'undefined') { return res.status(404).send('Not Found'); }
 
 	for(var i=0; i< Adminsonline.length; i++)
 	{
-		if(Adminsonline[i].userid === req.headers['userid']) { found = 1; }
+		if(Adminsonline[i].userId === req.headers['userId']) { found = 1; }
 	}
 	if(found == 0) { return res.status(404).send('Not Found'); }
 
@@ -294,13 +294,15 @@ router.post('/matches', function(req, res, next) {
 	while(j!=fixtures.length) {require('deasync').sleep(100);}
 });
 
+
+/* Change Result */
 router.post('/changeresult', function(req, res, next){
 	var found = 0;
-	if(typeof req.headers['userid'] == 'undefined') { return res.status(404).send('Not Found'); }
+	if(typeof req.headers['userId'] == 'undefined') { return res.status(404).send('Not Found'); }
 
 	for(var i=0; i< Adminsonline.length; i++)
 	{
-		if(Adminsonline[i].userid === req.headers['userid']) { found = 1; }
+		if(Adminsonline[i].userId === req.headers['userId']) { found = 1; }
 	}
 	if(found == 0) { return res.status(404).send('Not Found'); }
 
@@ -344,7 +346,25 @@ router.post('/changeresult', function(req, res, next){
 	});
 });
 
+/* Scoresheet */
 
+router.post('/getscoresheet/:id', function(req, res, next){
+	var found = 0;
+	if(typeof req.headers['userId'] == 'undefined') { return res.status(404).send('Not Found'); }
+
+	for(var i=0; i< Adminsonline.length; i++)
+	{
+		if(Adminsonline[i].userId === req.headers['userId']) { found = 1; }
+	}
+	if(found == 0) { return res.status(404).send('Not Found'); }
+	User.Allmatch.find({matchid:req.params.id},function(err,match){
+		if (err) return next(err);
+		var scoresheet = match[0].scoresheet;
+		var jsonret = JSON.stringify(scoresheet);
+      	res.json(jsonret);		
+	});
+
+});
 
 module.exports = router;
 
