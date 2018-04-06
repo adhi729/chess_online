@@ -26,6 +26,7 @@ sendUsername(username:string):void{
   }
 
 makeMove(userId:string, matchId: string, move: number): void{
+  console.log("hitted socket service")
    this.Socket.emit('makeMove',{'userId': userId, 'matchId':matchId, 'move': move});
    this.Socket.on('makeMove', function(data) {
       console.log(data);
@@ -37,7 +38,7 @@ makeMove(userId:string, matchId: string, move: number): void{
   	this.messages = [];
   }
 sendMessages(){
-  console.log("hitted socket service")
+  
 	this.messages.push(this.messageDummy);
 }
 getMessages(): Observable<Message[]>{
