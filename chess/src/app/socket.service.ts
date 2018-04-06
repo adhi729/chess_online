@@ -31,6 +31,7 @@ sendUsername():void{
   	this.messages = [];
   }
 sendMessages(){
+  console.log("hitted socket service")
 	this.messages.push(this.messageDummy);
 }
 getMessages(): Observable<Message[]>{
