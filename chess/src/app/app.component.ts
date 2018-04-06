@@ -23,7 +23,7 @@ export class AppComponent {
 sendMessageTemp(){
     console.log("sending temp message");
     //this.socketService.sendUsername();
-    this.socketService.sendMessages();
+    this.socketService.sendUsername();
   }
  clearMessages():void{
    console.log("clearing temp message");
