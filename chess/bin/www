@@ -37,7 +37,7 @@ io.on('connection', (socket) => {
     allsockets[name] = socket;
     // allsockets[name].emit('checking',"printthis");
   });
-  socket.on('sendmessage',function(obj){
+  socket.on('sendMessage',function(obj){
     var matchid = obj.match_id;
     var whiteplayer = matchid.slice(0,(matchid.length)/2);
     var blackplayer = matchid.slice((matchid.length)/2,matchid.length);
@@ -59,6 +59,7 @@ io.on('connection', (socket) => {
     //   match[0].scoresheet.push(moveContent);
     //   match[0].save();
     // });
+    console.log(obj.userId);
     if(whiteplayer != obj.userId)
     {
       allsockets[whiteplayer].emit('makeMove',obj);
