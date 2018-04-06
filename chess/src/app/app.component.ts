@@ -13,6 +13,7 @@ import * as io from 'socket.io-client';
 export class AppComponent {
   socket;
   title = 'app';
+  player:string = "";
   messages: Message[];
   ngOnInit(): void{  
     this.getMessages();
@@ -20,10 +21,10 @@ export class AppComponent {
   constructor(private socketService: SocketService){
   }
   
-sendMessageTemp(id:number){
+sendMessageTemp(){
     console.log("sending temp message");
     //this.socketService.sendUsername();
-    this.socketService.sendUsername(String(id));
+    this.socketService.sendMessages();
   }
  clearMessages():void{
    console.log("clearing temp message");

@@ -19,13 +19,19 @@ ngOnInit():void{
 	// this.sendUsername();
 }
 sendUsername(username:string):void{
-	console.log("sending username")
     this.Socket.emit('username',username);
     this.Socket.on('checking', function(data) {
       console.log(data);
     });
-
   }
+
+makeMove(userId:string, matchId: string, move: number): void{
+   this.Socket.emit('makeMove',{'userId': userId, 'matchId':matchId, 'move': move});
+   this.Socket.on('makeMove', function(data) {
+      console.log(data);
+    });
+}
+
   clearMessages(){
   	console.log(this.messages)
   	this.messages = [];

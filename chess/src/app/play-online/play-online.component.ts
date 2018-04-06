@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
+
 @Component({
   selector: 'app-play-online',
   templateUrl: './play-online.component.html',
@@ -8,7 +9,6 @@ import { Component, OnInit } from '@angular/core';
 export class PlayOnlineComponent implements OnInit {
 
   constructor() { }
-
   ngOnInit() {
   }
 

@@ -2,6 +2,11 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 
+import { Login } from './class_defs/login_item'; 
+
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError, map, tap } from 'rxjs/operators';
+
 @Injectable()
 export class UserLoginService {
 	private isUserLoggedIn: boolean = false;
@@ -23,6 +28,13 @@ export class UserLoginService {
 		console.log(this.userName,"lol")
 		return of(this.userName);
 	}
-  constructor() { }
+	httpLoginOptions = {
+  		headers: new HttpHeaders({ 'Content-Type': 'application/json'})
+	};
+	loginUser(userId: string, userPass: string): Observable<Login>{
+		return this.http.post<Login>("http://localhost:3000/user/auth", {'úserId':userId, 'userPass': userPass} ).pipe(
+			tap((login:Login) => console.log(login) ))
+	}
+  constructor(private http: HttpClient) { }
 
 }
