@@ -4,9 +4,11 @@
 	<button (click)="setUser(2)">Black</button>
 
 	<button (click)="makeMoveTemp()">move</button>
-<div class="leftColumn">
-	<app-board></app-board>
+<div *ngIf="player">
+	<div class="leftColumn">
+	<app-board [profile]="player"></app-board>
 </div>
 <div class="rightColumn">
 	<app-taunts></app-taunts>
+</div>	
 </div>

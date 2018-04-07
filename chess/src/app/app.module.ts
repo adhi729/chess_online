@@ -23,6 +23,7 @@ import { UserLoginService } from './user-login.service';
 import { SocketService } from './socket.service';
 import { AuthGuardGuard } from './auth-guard.guard';
 import { BlogComponent } from './blog/blog.component';
+import { PairingComponent } from './pairing/pairing.component';
 
 
 @NgModule({
@@ -39,6 +40,7 @@ import { BlogComponent } from './blog/blog.component';
     BoardComponent,
     TauntsComponent,
     BlogComponent,
+    PairingComponent,
   ],
   imports: [
     BrowserModule,

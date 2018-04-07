@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { board_square } from '../class_defs/board_square_item';
 import { boardIniState } from '../class_defs/board_state';
 
@@ -11,6 +11,7 @@ import { boardIniState } from '../class_defs/board_state';
 
 
 export class BoardComponent implements OnInit {
+	@Input() profile: string;
 	squares: board_square[] = [] ;
 	orient: number = window.innerWidth / window.innerHeight;
 	square_width: number;
@@ -21,9 +22,12 @@ export class BoardComponent implements OnInit {
 	customStyle(square: board_square): any {
 		this.setBoardSize();
 		let tempColor = (square.id.x+square.id.y)%2 ? true : false;
+		if(this.profile == "white"){
+		tempColor = (!tempColor)? true: false;
+		}
 		let tempActive = (square.status == "active")? true : false;
 		return {
-			'background-color' : tempColor ? 'orange' : 'red',
+			'background-color' : tempColor ? 'white' : 'lightgreen',
 			'width': String(this.square_width)+'px',
 			'height': String(this.square_width)+'px',
 			'top': String(square.id.x*this.square_width)+'px',
@@ -45,10 +49,8 @@ export class BoardComponent implements OnInit {
 		}
 	};
 	private matchId: string = "";
-	private player_1: string;
-	private player_2: string;
 	private kingPosition: {x:number, y:number} = {x:8,y:5};
-	private MoveCount :{king: boolean; rook_right: boolean; rook_left: boolean;} = {king: false, rook_left: false, rook_right: false};
+	private moveCount :{king: boolean; rook_right: boolean; rook_left: boolean;} = {king: false, rook_left: false, rook_right: false};
 	private makeMoveSquare : board_square = null;
 	private activeSquares: number[] = [];
 	private piecesTake = [[],[]];
@@ -57,11 +59,26 @@ export class BoardComponent implements OnInit {
 		let index_id :{x_id : number; y_id: number} = {x_id : x, y_id : y};
 		switch (piece.slice(0,-9)) {
 			case "pawn":
-				if (x = 6) {
-					this.activeSquares.push(x*8+y-1,x*8+y+7)
+				if (x == 7) {
+					if (this.squares[x*8 + y - 17].piece == "" ){
+						this.activeSquares.push(x*8+y-17)
+					}
+					if (this.squares[x*8 + y - 25].piece == "" ){
+						this.activeSquares.push(x*8+y-25);
+					}
+					
 				} else {
-					this.activeSquares.push(x*8+y-1)
+					if (this.squares[x*8 + y - 17].piece == "" ){
+						this.activeSquares.push(x*8+y-17)
+					}
+
 				}
+				if(this.squares[x*8 + y - 16].piece != "" && this.squares[x*8 + y - 16].piece.slice(-8,-3) != this.profile){
+						if(y != 8 ){this.activeSquares.push(x*8 + y - 16)}
+					}
+				if(this.squares[x*8 + y - 18].piece != "" && this.squares[x*8 + y - 18].piece.slice(-8,-3) != this.profile){
+						if(y != 1 ){this.activeSquares.push(x*8 + y - 18)}
+					}
 				break;
 			
 			case "rook":
@@ -296,9 +313,9 @@ export class BoardComponent implements OnInit {
 					{x_id : x-1, y_id : y},
 					{x_id : x-1, y_id : y-1}];
 				for(let poss of possibles) {
-					if(poss.x_id>0&&poss.x_id<=8&&poss.y_id>0&&poss.y_id<=8){
-						console.log()
+					if(poss.x_id>0&&poss.x_id<=8&&poss.y_id>0&&poss.y_id<=8){						
 						if(!this.checkCheck(poss.x_id,poss.y_id)){
+							console.log("kings moves:", poss.x_id,poss.y_id)
 							if (this.squares[poss.x_id*8+poss.y_id-9].piece == "" ){
 								this.activeSquares.push(poss.x_id*8+poss.y_id-9)						
 							} else {
@@ -315,13 +332,19 @@ export class BoardComponent implements OnInit {
 	}
 
 	private checkCheck(x: number,y: number): boolean{
+		//adding and removing king
+		this.squares[this.kingPosition.x*8+this.kingPosition.y - 9].piece = "";
+		//
 		let index_id :{x_id : number; y_id: number} = {x_id : x, y_id : y};
 				if (index_id.x_id - 1 > 0 && index_id.y_id - 1 > 0){
 					for (let i = index_id.x_id - 1,j = index_id.y_id -1; i>0 && j>0; i--,j--){
 						if (this.squares[i*8 + j - 9].piece != "" ){
-							if(this.squares[index_id.x_id*8+index_id.y_id-9].piece.slice(-8,-3) != this.squares[i*8+j-9].piece.slice(-8,-3)){
-								if(this.squares[i*8+j-9].piece.slice(0,-9) == "queen" ||this.squares[i*8+j-9].piece.slice(0,-9) == "bishop" ){
-									console.log(i,j,"check from bishop/queen")
+							if(this.profile != this.squares[i*8+j-9].piece.slice(-8,-3)){
+								if(this.squares[i*8+j-9].piece.slice(0,-9) == "queen" || this.squares[i*8+j-9].piece.slice(0,-9) == "bishop"  ){
+									console.log(i,j,this.squares[i*8+j-9].piece,"check from bishop/queen")
+									//
+									this.squares[this.kingPosition.x*8+this.kingPosition.y - 9].piece = "king_"+this.profile+"_00";
+									//
 									return true;
 								}
 							}
@@ -332,22 +355,28 @@ export class BoardComponent implements OnInit {
 				if (index_id.x_id - 1 < 7 && index_id.y_id - 1 < 7){
 					for (let i = index_id.x_id + 1,j = index_id.y_id + 1; i<=8 && j<=8; i++,j++){
 						if (this.squares[i*8 + j - 9].piece != "" ){
-							if(this.squares[index_id.x_id*8+index_id.y_id-9].piece.slice(-8,-3) != this.squares[i*8+j-9].piece.slice(-8,-3)){
-								if(this.squares[i*8+j-9].piece.slice(0,-9) == "queen" ||this.squares[i*8+j-9].piece.slice(0,-9) == "bishop" ){
-									console.log(i,j,"check from bishop/queen")
+							if(this.profile != this.squares[i*8+j-9].piece.slice(-8,-3)){
+								if(this.squares[i*8+j-9].piece.slice(0,-9) == "queen" || this.squares[i*8+j-9].piece.slice(0,-9) == "bishop"  ){
+									console.log(i,j,this.squares[i*8+j-9].piece,"check from bishop/queen")
+									//
+									this.squares[this.kingPosition.x*8+this.kingPosition.y - 9].piece = "king_"+this.profile+"_00";
+									//
 									return true;
 								}
 							}
 							break;
 						}
 					}
-				}
+				}	
 				if (index_id.x_id - 1 > 0 && index_id.y_id - 1 < 7){
 					for (let i = index_id.x_id - 1,j = index_id.y_id + 1; i>0 && j<=8; i--,j++){
 						if (this.squares[i*8 + j - 9].piece != "" ){
-							if(this.squares[index_id.x_id*8+index_id.y_id-9].piece.slice(-8,-3) != this.squares[i*8+j-9].piece.slice(-8,-3)){
-								if(this.squares[i*8+j-9].piece.slice(0,-9) == "queen" ||this.squares[i*8+j-9].piece.slice(0,-9) == "bishop" ){
-									console.log(i,j,"check from bishop/queen")
+							if(this.profile != this.squares[i*8+j-9].piece.slice(-8,-3)){
+								if(this.squares[i*8+j-9].piece.slice(0,-9) == "queen" || this.squares[i*8+j-9].piece.slice(0,-9) == "bishop"  ){
+									console.log(i,j,this.squares[i*8+j-9].piece,"check from bishop/queen")
+									//
+									this.squares[this.kingPosition.x*8+this.kingPosition.y - 9].piece = "king_"+this.profile+"_00";
+									//
 									return true;
 								}
 							}
@@ -358,9 +387,12 @@ export class BoardComponent implements OnInit {
 				if (index_id.x_id - 1 < 7 && index_id.y_id - 1 > 0){
 					for (let i = index_id.x_id + 1,j = index_id.y_id - 1; i<=8 && j>0; i++,j--){
 						if (this.squares[i*8 + j - 9].piece != "" ){
-							if(this.squares[index_id.x_id*8+index_id.y_id-9].piece.slice(-8,-3) != this.squares[i*8+j-9].piece.slice(-8,-3)){
-								if(this.squares[i*8+j-9].piece.slice(0,-9) == "queen" ||this.squares[i*8+j-9].piece.slice(0,-9) == "bishop" ){
-									console.log(i,j,"check from bishop/queen")
+							if(this.profile != this.squares[i*8+j-9].piece.slice(-8,-3)){
+								if(this.squares[i*8+j-9].piece.slice(0,-9) == "queen" ||this.squares[i*8+j-9].piece.slice(0,-9) == "bishop"  ){
+									console.log(i,j,this.squares[i*8+j-9].piece,"check from bishop/queen")
+									//
+									this.squares[this.kingPosition.x*8+this.kingPosition.y - 9].piece = "king_"+this.profile+"_00";
+									//
 									return true;
 								}
 							}
@@ -371,9 +403,12 @@ export class BoardComponent implements OnInit {
 				if (index_id.x_id - 1 > 0){
 					for (var i = index_id.x_id - 1; i > 0; i--) {
 						if (this.squares[i*8 + index_id.y_id - 9].piece != "" ){
-							if(this.squares[index_id.x_id*8+index_id.y_id-9].piece.slice(-8,-3) != this.squares[i*8+index_id.y_id-9].piece.slice(-8,-3)){
+							if(this.profile != this.squares[i*8+index_id.y_id-9].piece.slice(-8,-3)){
 								if(this.squares[i*8+index_id.y_id-9].piece.slice(0,-9) == "queen" ||this.squares[i*8+index_id.y_id-9].piece.slice(0,-9) == "rook" ){
 									console.log(i,index_id.y_id,"check from rook/queen_01")
+									//
+									this.squares[this.kingPosition.x*8+this.kingPosition.y - 9].piece = "king_"+this.profile+"_00";
+									//
 									return true;
 								}
 							}
@@ -384,9 +419,12 @@ export class BoardComponent implements OnInit {
 				if (index_id.x_id - 1< 7){
 					for (var i = index_id.x_id + 1; i <= 8; i++) {
 						if (this.squares[i*8 + index_id.y_id - 9].piece != "" ){
-							if(this.squares[index_id.x_id*8+index_id.y_id-9].piece.slice(-8,-3) != this.squares[i*8+index_id.y_id-9].piece.slice(-8,-3)){
+							if(this.profile != this.squares[i*8+index_id.y_id-9].piece.slice(-8,-3)){
 								if(this.squares[i*8+index_id.y_id-9].piece.slice(0,-9) == "queen" ||this.squares[i*8+index_id.y_id-9].piece.slice(0,-9) == "rook" ){
 									console.log(i,index_id.y_id,"check from rook/queen_01")
+									//
+									this.squares[this.kingPosition.x*8+this.kingPosition.y - 9].piece = "king_"+this.profile+"_00";
+									//
 									return true;
 								}
 							}
@@ -397,9 +435,12 @@ export class BoardComponent implements OnInit {
 				if (index_id.y_id - 1< 7){
 					for (var j = index_id.y_id + 1; j <= 8; j++) {
 						if (this.squares[index_id.x_id*8 + j - 9].piece != "" ){
-							if(this.squares[index_id.x_id*8+index_id.y_id-9].piece.slice(-8,-3) != this.squares[index_id.x_id*8+j-9].piece.slice(-8,-3)){
+							if(this.profile != this.squares[index_id.x_id*8+j-9].piece.slice(-8,-3)){
 								if(this.squares[index_id.x_id*8+j-9].piece.slice(0,-9) == "queen" ||this.squares[index_id.x_id*8+j-9].piece.slice(0,-9) == "rook" ){
 									console.log(index_id.x_id,j,"check from rook/queen_03")
+									//
+									this.squares[this.kingPosition.x*8+this.kingPosition.y - 9].piece = "king_"+this.profile+"_00";
+									//
 									return true;
 								}
 							}
@@ -410,9 +451,12 @@ export class BoardComponent implements OnInit {
 				if (index_id.y_id - 1 > 0){
 					for (var j = index_id.y_id - 1; j > 0; j--) {
 						if (this.squares[index_id.x_id*8 + j - 9].piece != "" ){
-							if(this.squares[index_id.x_id*8+index_id.y_id-9].piece.slice(-8,-3) != this.squares[index_id.x_id*8+j-9].piece.slice(-8,-3)){
+							if(this.profile != this.squares[index_id.x_id*8+j-9].piece.slice(-8,-3)){
 								if(this.squares[index_id.x_id*8+j-9].piece.slice(0,-9) == "queen" ||this.squares[index_id.x_id*8+j-9].piece.slice(0,-9) == "rook" ){
 									console.log(index_id.x_id,j,"check from rook/queen_03")
+									//
+									this.squares[this.kingPosition.x*8+this.kingPosition.y - 9].piece = "king_"+this.profile+"_00";
+									//
 									return true;
 								}
 							}
@@ -420,19 +464,82 @@ export class BoardComponent implements OnInit {
 						}
 					}
 				}
+				//horse moves check validation:
+				let possible: {x_id : number; y_id: number}[] = [
+					{x_id : x+1, y_id : y+2},
+					{x_id : x+1, y_id : y-2},
+					{x_id : x-1, y_id : y+2},
+					{x_id : x-1, y_id : y-2},
+					{x_id : x+2, y_id : y+1},
+					{x_id : x+2, y_id : y-1},
+					{x_id : x-2, y_id : y+1},
+					{x_id : x-2, y_id : y-1}];
+				for(let poss of possible) {
+					if(poss.x_id>0&&poss.x_id<=8&&poss.y_id>0&&poss.y_id<=8){
+						if (this.squares[poss.x_id*8+poss.y_id-9].piece.split("_")[0] == "horse" && this.squares[poss.x_id*8+poss.y_id-9].piece.split("_")[1] != this.profile ){
+							
+									//
+									this.squares[this.kingPosition.x*8+this.kingPosition.y - 9].piece = "king_"+this.profile+"_00";
+									//
+							return true;
+						} 
+					}
+				}
+				//king moves check validation:
+				let possibles: {x_id : number; y_id: number}[] = [
+					{x_id : x+1, y_id : y+1},
+					{x_id : x+1, y_id : y},
+					{x_id : x+1, y_id : y-1},
+					{x_id : x, y_id : y+1},
+					{x_id : x, y_id : y-1},
+					{x_id : x-1, y_id : y+1},
+					{x_id : x-1, y_id : y},
+					{x_id : x-1, y_id : y-1}];
+				for(let poss of possibles) {
+					if(poss.x_id>0&&poss.x_id<=8&&poss.y_id>0&&poss.y_id<=8){
+						if (this.squares[poss.x_id*8+poss.y_id-9].piece.split("_")[0] == "king" && this.squares[poss.x_id*8+poss.y_id-9].piece.split("_")[1] != this.profile ){
+								console.log(this.squares[poss.x_id*8+poss.y_id-9].piece.split("_")[0])
+							
+									//
+									this.squares[this.kingPosition.x*8+this.kingPosition.y - 9].piece = "king_"+this.profile+"_00";
+									//
+							return true;						
+						}
+					}
+				}
+				// if(x*8+y-16>=0){
+				// if(this.squares[x*8+y-16].piece.split("_")[0] == "pawn" && this.squares[x*8+y-16].piece.split("_")[1] != this.profile ){
+					
+				// 					//
+				// 					this.squares[this.kingPosition.x*8+this.kingPosition.y - 9].piece = "king_"+this.profile+"_00";
+				// 					//
+				// 	return true;
+				// }}
+				// if(x*8+y-18>=0){
+				// if(this.squares[x*8+y-18].piece.split("_")[0] == "pawn" && this.squares[x*8+y-18].piece.split("_")[1] != this.profile ){
+					
+				// 					//
+				// 					this.squares[this.kingPosition.x*8+this.kingPosition.y - 9].piece = "king_"+this.profile+"_00";
+				// 					//
+				// 	return true;
+				// }}
+									//
+									this.squares[this.kingPosition.x*8+this.kingPosition.y - 9].piece = "king_"+this.profile+"_00";
+									//
+
 		return false;
 	}
 
 	private commitMove(id_1: number, id_2: number): boolean{
-
-		if(this.checkCheck(this.kingPosition.x,this.kingPosition.y)){
-			return false;
-		}
+		console.log(this.kingPosition);
+		
 		if(this.squares[id_1].piece.slice(0,-9) == "king"){
 			let temp = {x:(id_2 - id_2%8)/8 +1 ,y:id_2%8 +1};
-			if(this.checkCheck(temp.x,temp.y)){
-				return false;		
-			}
+			// if(this.checkCheck(temp.x,temp.y)){
+			// 	return false;		
+			// }
+			this.kingPosition = {x:temp.x ,y:temp.y};
+			this.moveCount.king	=  true;
 		}
 		if (this.squares[id_2].piece.length != 0 ){
 			this.piecesTake[0].push(this.squares[id_2].piece);
@@ -453,7 +560,10 @@ export class BoardComponent implements OnInit {
 				return false;
 			}
 		}
-		
+		if(this.checkCheck(this.kingPosition.x,this.kingPosition.y)){
+			return false;
+		}
+
 		return true;
 		
 	}
@@ -467,6 +577,9 @@ export class BoardComponent implements OnInit {
 
 	moveMe(square: board_square): void{
 		if (this.makeMoveSquare == null) {
+			if(square.piece.slice(-8,-3)!= this.profile){
+				return;
+			}
 			this.makeMoveSquare = square;
 			square.status = "active";
 			this.findMoves(square.id.x, square.id.y, square.piece);
@@ -499,6 +612,7 @@ export class BoardComponent implements OnInit {
 
   ngOnInit() {
   	let	boards: board_square[] = [];
+	let tempArray: board_square[]=[];
 	/*for (let i = 1; i <9 ; i++) {
 		for (let j = 1; j < 9; j++) {
 			let new_square: board_square = {
@@ -509,6 +623,25 @@ export class BoardComponent implements OnInit {
 		}
 	}*/
 	boards = boardIniState;
-	this.addSquares(boards);
+	switch (this.profile) {
+		case "white":
+			for (var i = 0; i < boards.length; i++) {
+				if(boards[i].piece == "") {
+					continue;
+				}
+				let temp = (boards[i].piece.slice(-8,-3)=="black")? "_white_": "_black_";
+				boards[i].piece = boards[i].piece.split("_")[0] + temp + boards[i].piece.split("_")[2];
+			}
+			// for (var i = boards.length -1; i >= 0; i--) {
+			// 	tempArray.push(boards[i]);
+			// }
+			this.addSquares(boards);
+			break;
+		
+		case "black":
+			this.addSquares(boards);
+			break;
+	}
+	
   }
 }
