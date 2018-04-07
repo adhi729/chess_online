@@ -608,7 +608,7 @@ export class BoardComponent implements OnInit {
 		return this.squares[parseInt(x.slice(1,2))*8 + parseInt(x.slice(0,1))-9].piece.slice(0,-3);
 		
 	}; 
-  constructor() { }
+  constructor(private socketService: SocketService) { }
 
   ngOnInit() {
   	let	boards: board_square[] = [];
