@@ -3,6 +3,10 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var User = require('../models/User.js');
 var Admin = require('../models/Admin.js');
+var Excel = require('exceljs');
+var tempfile = require('tempfile');
+var path = require('path');
+var fs = require('fs');
 
 global.Buffer = global.Buffer || require('buffer').Buffer;
 
@@ -250,7 +254,13 @@ router.get('/sendratings', function(req, res, next) {
 		}
 		
 		var jsonret = JSON.stringify(myres);
-      	res.json(jsonret);
+
+	    res.setHeader('Content-disposition', 'attachment; filename= round.json');
+	    res.setHeader('Content-type', 'application/json');
+	    res.write(jsonret, function (err) {
+	    	res.end();
+	    });
+      	// res.json(jsonret);
 	});
 });
 
@@ -365,6 +375,23 @@ router.post('/getscoresheet/:id', function(req, res, next){
 	});
 
 });
+
+
+/* Download */
+
+router.get('/download', function(req, res, next) {
+	var jsonObj = [
+            { header: 'Id', key: 'id', width: 10 },
+            { header: 'Name', key: 'name', width: 32 } ];
+    var data = JSON.stringify(jsonObj);
+    res.setHeader('Content-disposition', 'attachment; filename= myFile.json');
+    res.setHeader('Content-type', 'application/json');
+    res.write(data, function (err) {
+        res.end();
+    });
+});
+
+
 
 module.exports = router;
 

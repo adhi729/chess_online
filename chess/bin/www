@@ -44,11 +44,11 @@ io.on('connection', (socket) => {
     var blackplayer = matchid.slice((matchid.length)/2,matchid.length);
     if(whiteplayer != obj.user_id)
     {
-      allsockets[whiteplayer].emit('getmessage',obj);
+      allsockets[whiteplayer].emit('sendMessage',obj);
     }
     else
     {
-      allsockets[blackplayer].emit('getmessage',obj); 
+      allsockets[blackplayer].emit('sendMessage',obj); 
     }
   });
 
@@ -60,61 +60,59 @@ io.on('connection', (socket) => {
     //   match[0].scoresheet.push(moveContent);
     //   match[0].save();
     // });
-    console.log(obj.userId);
-    console.log(whiteplayer);
-    console.log(blackplayer);
+
     if(whiteplayer != obj.userId)
     {
-      allsockets[whiteplayer].emit('makeMove',obj);
+      (allsockets[whiteplayer]).emit('makeMove',obj);
     }
     else
     {
-      allsockets[blackplayer].emit('makeMove',obj); 
+      (allsockets[blackplayer]).emit('makeMove',obj); 
     }
   });
 
-  socket.on('sendresign',function(obj){
+  socket.on('sendResign',function(obj){
     var matchid = obj.match_id;
     var whiteplayer = matchid.slice(0,(matchid.length)/2);
     var blackplayer = matchid.slice((matchid.length)/2,matchid.length);
 
     if(whiteplayer != obj.user_id)
     {
-      allsockets[whiteplayer].emit('acceptresign',obj);
+      allsockets[whiteplayer].emit('sendResign',obj);
     }
     else
     {
-      allsockets[blackplayer].emit('acceptresign',obj); 
+      allsockets[blackplayer].emit('sendResign',obj); 
     }
   });
 
-  socket.on('senddrawrequest',function(obj){
+  socket.on('drawRequest',function(obj){
     var matchid = obj.match_id;
     var whiteplayer = matchid.slice(0,(matchid.length)/2);
     var blackplayer = matchid.slice((matchid.length)/2,matchid.length);
 
     if(whiteplayer != obj.user_id)
     {
-      allsockets[whiteplayer].emit('getdrawrequest',obj);
+      allsockets[whiteplayer].emit('drawRequest',obj);
     }
     else
     {
-      allsockets[blackplayer].emit('getdrawrequest',obj); 
+      allsockets[blackplayer].emit('drawRequest',obj); 
     }
   });
 
-  socket.on('acceptdrawrequest',function(obj){
+  socket.on('drawAccept',function(obj){
     var matchid = obj.match_id;
     var whiteplayer = matchid.slice(0,(matchid.length)/2);
     var blackplayer = matchid.slice((matchid.length)/2,matchid.length);
 
     if(whiteplayer != obj.user_id)
     {
-      allsockets[whiteplayer].emit('accepteddraw',obj);
+      allsockets[whiteplayer].emit('drawAccept',obj);
     }
     else
     {
-      allsockets[blackplayer].emit('accepteddraw',obj); 
+      allsockets[blackplayer].emit('drawAccept',obj); 
     }
   });
 
