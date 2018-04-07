@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { board_square } from '../class_defs/board_square_item';
 import { boardIniState } from '../class_defs/board_state';
-
+import { SocketService } from '../socket.service';
 
 @Component({
   selector: 'app-board',
@@ -563,7 +563,7 @@ export class BoardComponent implements OnInit {
 		if(this.checkCheck(this.kingPosition.x,this.kingPosition.y)){
 			return false;
 		}
-
+		this.socketService.makeMove(this.profile, "whiteblack", id_1+id_2);
 		return true;
 		
 	}

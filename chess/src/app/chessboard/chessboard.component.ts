@@ -30,7 +30,7 @@ export class ChessboardComponent implements OnInit {
   		}
   	makeMoveTemp():void{
   		console.log("hitted component service")
-  		this.socketService.makeMove(this.player, "whiteblack", 1111);
+  		//this.socketService.makeMove(this.player, "whiteblack", 1111);
   	}	
   ngOnInit() {
   }
