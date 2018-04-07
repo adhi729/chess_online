@@ -8,6 +8,7 @@ import { LeaderboardComponent } from './leaderboard/leaderboard.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { PlayOnlineComponent } from './play-online/play-online.component';
 import { ChessboardComponent } from './chessboard/chessboard.component';
+import { PairingComponent } from './pairing/pairing.component';
 //import { AuthGuardGuard } from './auth-guard.guard';
 
 const routes: Routes = [
@@ -16,7 +17,7 @@ const routes: Routes = [
   { path:'profile/:id',component:ProfileComponent },
   { path:'play',component:ChessboardComponent },  
   { path:'leaderboard', component:LeaderboardComponent },
-  { path:'test', component:LoginComponent },
+  { path:'test', component:PairingComponent },
   { path: '', component:LoginComponent},
   //{ path: '', redirectTo: '/home', pathMatch: 'full'},
   { path: '**', component: PageNotFoundComponent }
