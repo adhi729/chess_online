@@ -22,8 +22,8 @@ import { TauntsComponent } from './taunts/taunts.component';
 import { UserLoginService } from './user-login.service';
 import { SocketService } from './socket.service';
 import { AuthGuardGuard } from './auth-guard.guard';
-import { BlogComponent } from './blog/blog.component';
 import { PairingComponent } from './pairing/pairing.component';
+import { BlogComponent } from './blog/blog.component';
 
 
 @NgModule({
@@ -39,8 +39,8 @@ import { PairingComponent } from './pairing/pairing.component';
     ChessboardComponent,
     BoardComponent,
     TauntsComponent,
-    BlogComponent,
     PairingComponent,
+    BlogComponent,
   ],
   imports: [
     BrowserModule,

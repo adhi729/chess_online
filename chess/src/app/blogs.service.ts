@@ -20,9 +20,8 @@ export class BlogsService {
 		return this.http.get<Blog[]>("http://localhost:3000/blogs").pipe(
 			catchError(this.handleError<Blog[]>('getBlogs', [])));
 	};
-  getBlog(): Observable<Blog> {
-    console.log("in service")
-    return this.http.get<Blog>("http://localhost:3000/blogs/1").pipe(
+  getBlog(id: string): Observable<Blog> {
+    return this.http.get<Blog>("http://localhost:3000/blogs/"+id).pipe(
       catchError(this.handleError<Blog>('getBlog')));
   };
 

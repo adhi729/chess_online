@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
+import 'rxjs/add/operator/switchMap';
+import { Observable } from 'rxjs/Observable';
 
 import { Blog } from '../class_defs/blog_item';
 import { BlogsService } from '../blogs.service';
@@ -11,16 +13,17 @@ import { BlogsService } from '../blogs.service';
   styleUrls: ['./blog.component.css']
 })
 export class BlogComponent implements OnInit {
-	blogs: Blog[];
-  constructor(private blogservice: BlogsService,private route: ActivatedRoute, private location: Location) { }
-getBlogs(): void{
-  	this.blogservice.getBlogs().subscribe(blogs => this.blogs = blogs);
-  	console.log("helllo")
+  blog:Blog;
+getBlog(id: string): void{
+    this.blogservice.getBlog(id).subscribe(blog => this.blog = blog)
   }
+  constructor(private route: ActivatedRoute,
+  private location: Location,
+  private blogservice: BlogsService) { }
+
   ngOnInit() {
-  	//const id = this.route.snapshot.paramMap.get('id');
-  	//console.log(id)
-  	this.getBlogs();
+    const id = this.route.snapshot.paramMap.get('id');
+    this.getBlog(id);
   }
 
 }
