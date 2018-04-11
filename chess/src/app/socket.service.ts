@@ -9,6 +9,7 @@ import * as io from 'socket.io-client';
 @Injectable()
 export class SocketService {
 	private Socket;
+	private move: number;
 	messages: Message[] = []; 
 	messageDummy: Message = {data: "loooooll"};
   constructor() { 
@@ -25,14 +26,18 @@ sendUsername(username:string):void{
     });
     this.Socket.on('makeMove', function(data) {
       console.log(data);
+      this.sendRecievedMoves(); 
     });
   }
 
 makeMove(userId:string, matchId: string, move: number): void{
   console.log("hitted socket service")
    this.Socket.emit('makeMove',{'userId': userId, 'matchId':matchId, 'move': move});
-   console.log("ëmitted?");  
    
+}
+
+sendRecievedMoves(): Observable<number>{
+	return of(this.move)
 }
 
   clearMessages(){

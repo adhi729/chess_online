@@ -12,6 +12,10 @@ import { SocketService } from '../socket.service';
 
 export class BoardComponent implements OnInit {
 	@Input() profile: string;
+	recievedMove: number;
+getMoves(): void{
+  	this.socketService.sendRecievedMoves().subscribe(recievedMove => this.recievedMove = recievedMove);
+  }
 	squares: board_square[] = [] ;
 	orient: number = window.innerWidth / window.innerHeight;
 	square_width: number;
@@ -642,6 +646,6 @@ export class BoardComponent implements OnInit {
 			this.addSquares(boards);
 			break;
 	}
-	
+	this.getMoves();
   }
 }
