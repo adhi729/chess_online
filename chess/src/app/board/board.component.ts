@@ -15,6 +15,7 @@ export class BoardComponent implements OnInit {
 	recievedMove: number;
 getMoves(): void{
   	this.socketService.sendRecievedMoves().subscribe(recievedMove => this.recievedMove = recievedMove);
+  	console.log(this.recievedMove)
   }
 	squares: board_square[] = [] ;
 	orient: number = window.innerWidth / window.innerHeight;

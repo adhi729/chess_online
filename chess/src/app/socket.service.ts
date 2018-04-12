@@ -26,7 +26,8 @@ sendUsername(username:string):void{
     });
     this.Socket.on('makeMove', function(data) {
       console.log(data);
-      this.sendRecievedMoves(); 
+      this.move = 1141;
+      //this.sendRecievedMoves(); 
     });
   }
 
