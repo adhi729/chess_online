@@ -9,7 +9,7 @@ import * as io from 'socket.io-client';
 @Injectable()
 export class SocketService {
 	private Socket;
-	private move: number;
+	move: number[];
 	messages: Message[] = []; 
 	messageDummy: Message = {data: "loooooll"};
   constructor() { 
@@ -26,7 +26,7 @@ sendUsername(username:string):void{
     });
     this.Socket.on('makeMove', function(data) {
       console.log(data);
-      this.move = 1141;
+      this.move.push(1111) ;
       //this.sendRecievedMoves(); 
     });
   }
