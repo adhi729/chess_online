@@ -19,7 +19,8 @@ getMoves(): void{
   }
  public initMoveReceiver():void{
  	this.socketService.onMove().subscribe((data:number)=>{
- 		console.log("recieved move",data);
+ 		console.log("recieved move here",data);
+ 		this.commitMove(data-data%100, data%100, false);
  	})
  }
 	squares: board_square[] = [] ;
@@ -540,7 +541,7 @@ getMoves(): void{
 		return false;
 	}
 
-	private commitMove(id_1: number, id_2: number): boolean{
+	private commitMove(id_1: number, id_2: number,user: boolean= true): boolean{
 		console.log(this.kingPosition);
 		
 		if(this.squares[id_1].piece.slice(0,-9) == "king"){
@@ -573,7 +574,8 @@ getMoves(): void{
 		if(this.checkCheck(this.kingPosition.x,this.kingPosition.y)){
 			return false;
 		}
-		this.socketService.makeMove(this.profile, "whiteblack", id_1+id_2);
+		if(user){
+		this.socketService.makeMove(this.profile, "whiteblack", id_1*100+id_2);}
 		return true;
 		
 	}
