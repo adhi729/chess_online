@@ -25,8 +25,8 @@ sendUsername(username:string):void{
       console.log(data);
     });
     this.Socket.on('makeMove', function(data) {
-      console.log(data);
-      this.move.push(1111) ;
+      console.log(data,"inside sendusername");
+      //this.sendRecievedMoves(data.move);
       //this.sendRecievedMoves(); 
     });
   }
@@ -36,9 +36,14 @@ makeMove(userId:string, matchId: string, move: number): void{
    this.Socket.emit('makeMove',{'userId': userId, 'matchId':matchId, 'move': move});
    
 }
-
-sendRecievedMoves(): Observable<number>{
-	return of(this.move)
+public onMove():Observable<number> {
+	console.log("inside onMove")
+        return new Observable<number>(observer => {
+            this.Socket.on('makeMove', (data) => observer.next(data.move));
+        });
+}
+sendRecievedMoves(mov: number):void{
+	this.move.push(mov);
 }
 
   clearMessages(){

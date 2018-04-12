@@ -17,6 +17,11 @@ getMoves(): void{
   	console.log(this.socketService.move);
   	
   }
+ public initMoveReceiver():void{
+ 	this.socketService.onMove().subscribe((data:number)=>{
+ 		console.log("recieved move",data);
+ 	})
+ }
 	squares: board_square[] = [] ;
 	orient: number = window.innerWidth / window.innerHeight;
 	square_width: number;
@@ -648,5 +653,6 @@ getMoves(): void{
 			break;
 	}
 	this.getMoves();
+	this.initMoveReceiver();
   }
 }
