@@ -575,7 +575,7 @@ getMoves(): void{
 			return false;
 		}
 		if(user){
-		this.socketService.makeMove(this.profile, "whiteblack", id_1*100+id_2);}
+		this.socketService.makeMove(this.profile, "whiteblack", ((id_1-id_1%8)*10+id_1%8)*100+(id_2-id_2%8)*10+id_2%8);}
 		return true;
 		
 	}
