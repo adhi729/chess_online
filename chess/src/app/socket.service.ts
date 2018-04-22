@@ -42,6 +42,11 @@ public onMove():Observable<number> {
             this.Socket.on('makeMove', (data) => observer.next(data.move));
         });
 }
+public onSpecialMoves(): Observable<number>{
+	return new Observable<number>(observer => {
+		this.Socket.on('makeSpecialMove',(data)=> observer.next(data.move))
+	})
+}
 sendRecievedMoves(mov: number):void{
 	this.move.push(mov);
 }

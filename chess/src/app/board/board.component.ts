@@ -20,7 +20,11 @@ getMoves(): void{
  public initMoveReceiver():void{
  	this.socketService.onMove().subscribe((data:number)=>{
  		console.log("recieved move here",data);
- 		this.commitMove(data-data%100, data%100, false);
+ 		this.commitOppMove(data-data%100, data%100);
+ 	})
+ 	this.socketService.onSpecialMoves().subscribe((data:number)=>{
+ 		console.log("recieved speccial move here",data);
+ 		this.commitOppSpeMove(data-data%100, data%100);
  	})
  }
 	squares: board_square[] = [] ;
@@ -34,11 +38,11 @@ getMoves(): void{
 		this.setBoardSize();
 		let tempColor = (square.id.x+square.id.y)%2 ? true : false;
 		if(this.profile == "white"){
-		tempColor = (!tempColor)? true: false;
+		//tempColor = (!tempColor)? true: false;
 		}
 		let tempActive = (square.status == "active")? true : false;
 		return {
-			'background-color' : tempColor ? 'white' : 'lightgreen',
+			'background-color' : tempColor ?  'lightgreen': 'white',
 			'width': String(this.square_width)+'px',
 			'height': String(this.square_width)+'px',
 			'top': String(square.id.x*this.square_width)+'px',
@@ -65,6 +69,9 @@ getMoves(): void{
 	private makeMoveSquare : board_square = null;
 	private activeSquares: number[] = [];
 	private piecesTake = [[],[]];
+	private turn : boolean;
+
+
 	private findMoves(x: number,y: number,piece:string): void {
 		
 		let index_id :{x_id : number; y_id: number} = {x_id : x, y_id : y};
@@ -341,6 +348,9 @@ getMoves(): void{
 
 		}
 	}
+	private commitSpecialMove():void{
+		//this.socketService.makeSpecialMove()
+	}
 
 	private checkCheck(x: number,y: number): boolean{
 		//adding and removing king
@@ -540,8 +550,24 @@ getMoves(): void{
 
 		return false;
 	}
+	private commitOppMove(id_1: number, id_2: number){
+		//no second side validation
+		if(!this.turn) return;
+		if (this.squares[id_2].piece = ""){
+			this.squares[id_2].piece = this.squares[id_1].piece;
+			this.squares[id_1].piece = "";
+		}
+		if(this.squares[id_2].piece != ""){
+			this.piecesTake[1].push(this.squares[id_2].piece);
+			this.squares[id_2].piece = this.squares[id_1].piece;
+			this.squares[id_1].piece = "";
+		}
+		this.turn = !this.turn;
+	}
+	private commitOppSpeMove(id_1: number, id_2: number){
 
-	private commitMove(id_1: number, id_2: number,user: boolean= true): boolean{
+	}
+	private commitMove(id_1: number, id_2: number): boolean{
 		console.log(this.kingPosition);
 		
 		if(this.squares[id_1].piece.slice(0,-9) == "king"){
@@ -574,8 +600,7 @@ getMoves(): void{
 		if(this.checkCheck(this.kingPosition.x,this.kingPosition.y)){
 			return false;
 		}
-		if(user){
-		this.socketService.makeMove(this.profile, "whiteblack", ((id_1-id_1%8)*10+id_1%8)*100+(id_2-id_2%8)*10+id_2%8);}
+		this.socketService.makeMove(this.profile, "whiteblack", ((id_1-id_1%8)*10+id_1%8)*100+(id_2-id_2%8)*10+id_2%8);
 		return true;
 		
 	}
@@ -588,6 +613,7 @@ getMoves(): void{
 	}
 
 	moveMe(square: board_square): void{
+		console.log(square)
 		if (this.makeMoveSquare == null) {
 			if(square.piece.slice(-8,-3)!= this.profile){
 				return;
@@ -638,11 +664,15 @@ getMoves(): void{
 	switch (this.profile) {
 		case "white":
 			for (var i = 0; i < boards.length; i++) {
+				//start
 				if(boards[i].piece == "") {
 					continue;
 				}
 				let temp = (boards[i].piece.slice(-8,-3)=="black")? "_white_": "_black_";
 				boards[i].piece = boards[i].piece.split("_")[0] + temp + boards[i].piece.split("_")[2];
+				//stop
+				// boards[i].id.x = 9 - boards[i].id.x;
+				// boards[i].id.y = 9 - boards[i].id.y;
 			}
 			// for (var i = boards.length -1; i >= 0; i--) {
 			// 	tempArray.push(boards[i]);
@@ -651,6 +681,13 @@ getMoves(): void{
 			break;
 		
 		case "black":
+			let temp = boards[3].piece;
+			boards[3].piece = boards[4].piece;
+			boards[4].piece = temp;
+			temp = boards[60].piece;
+			boards[60].piece = boards[59].piece;
+			boards[59].piece = temp;
+			this.kingPosition = {x:8, y:4}
 			this.addSquares(boards);
 			break;
 	}
