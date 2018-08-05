@@ -331,7 +331,8 @@ getMoves(): void{
 					{x_id : x-1, y_id : y},
 					{x_id : x-1, y_id : y-1}];
 				for(let poss of possibles) {
-					if(poss.x_id>0&&poss.x_id<=8&&poss.y_id>0&&poss.y_id<=8){						
+					if(poss.x_id>0&&poss.x_id<=8&&poss.y_id>0&&poss.y_id<=8){
+						if(this.checkCheck(poss.x_id,poss.y_id)){console.log("check in",poss.x_id,poss.y_id)}						
 						if(!this.checkCheck(poss.x_id,poss.y_id)){
 							console.log("kings moves:", poss.x_id,poss.y_id)
 							if (this.squares[poss.x_id*8+poss.y_id-9].piece == "" ){
@@ -528,22 +529,31 @@ getMoves(): void{
 						}
 					}
 				}
-				// if(x*8+y-16>=0){
-				// if(this.squares[x*8+y-16].piece.split("_")[0] == "pawn" && this.squares[x*8+y-16].piece.split("_")[1] != this.profile ){
-					
-				// 					//
-				// 					this.squares[this.kingPosition.x*8+this.kingPosition.y - 9].piece = "king_"+this.profile+"_00";
-				// 					//
-				// 	return true;
-				// }}
-				// if(x*8+y-18>=0){
-				// if(this.squares[x*8+y-18].piece.split("_")[0] == "pawn" && this.squares[x*8+y-18].piece.split("_")[1] != this.profile ){
-					
-				// 					//
-				// 					this.squares[this.kingPosition.x*8+this.kingPosition.y - 9].piece = "king_"+this.profile+"_00";
-				// 					//
-				// 	return true;
-				// }}
+				//check from pawn
+				//if(x*8+y-16>=0){ //original
+				if(x*8+y-16>=0&&y!=8){
+				//if(x*8+y-16>=0&&x*8+y-16>=0){
+				if(this.squares[x*8+y-16].piece.split("_")[0] == "pawn" && this.squares[x*8+y-16].piece.split("_")[1] != this.profile ){
+					console.log("start");
+					console.log(y);
+					console.log("end1");
+
+									//
+									this.squares[this.kingPosition.x*8+this.kingPosition.y - 9].piece = "king_"+this.profile+"_00";
+									//
+					return true;
+				}}
+				// if(x*8+y-18>=0){ //original
+				if(x*8+y-18>=0&&y!=1){	
+				if(this.squares[x*8+y-18].piece.split("_")[0] == "pawn" && this.squares[x*8+y-18].piece.split("_")[1] != this.profile ){
+					console.log("start");
+					console.log(y);
+					console.log("end2");
+									//
+									this.squares[this.kingPosition.x*8+this.kingPosition.y - 9].piece = "king_"+this.profile+"_00";
+									//
+					return true;
+				}}
 									//
 									this.squares[this.kingPosition.x*8+this.kingPosition.y - 9].piece = "king_"+this.profile+"_00";
 									//
