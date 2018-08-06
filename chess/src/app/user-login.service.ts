@@ -9,6 +9,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 
 @Injectable()
 export class UserLoginService {
+	private _loginURL = "http://localhost:3000/user/login";
 	private isUserLoggedIn: boolean = false;
 	private userName: string = "poinku";
 
@@ -35,6 +36,9 @@ export class UserLoginService {
 		return this.http.post<Login>("http://localhost:3000/user/auth", {'úserId':userId, 'userPass': userPass} ).pipe(
 			tap((login:Login) => console.log(login) ))
 	}
+	getToken(){
+		return localStorage.getItem('token');
+	};
   constructor(private http: HttpClient) { }
 
 }

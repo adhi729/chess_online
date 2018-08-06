@@ -2,11 +2,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
-import { AppRoutingModule } from './/app-routing.module';
+import { AppRoutingModule } from './app-routing.module';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { HomeComponent } from './home/home.component';
 import { BlogsService } from './blogs.service';
@@ -24,6 +25,7 @@ import { SocketService } from './socket.service';
 import { AuthGuardGuard } from './auth-guard.guard';
 import { PairingComponent } from './pairing/pairing.component';
 import { BlogComponent } from './blog/blog.component';
+import { TokenInterceptorService } from './token-interceptor.service';
 
 
 @NgModule({
@@ -48,7 +50,12 @@ import { BlogComponent } from './blog/blog.component';
     AppRoutingModule,
     HttpClientModule,
   ],
-  providers: [BlogsService, ProfileService, LeaderboardServiceService,UserLoginService, SocketService,AuthGuardGuard],
+  providers: [BlogsService, ProfileService, LeaderboardServiceService,UserLoginService, SocketService,AuthGuardGuard,
+  {
+    provide: HTTP_INTERCEPTORS,
+    useClass: TokenInterceptorService,
+    multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
